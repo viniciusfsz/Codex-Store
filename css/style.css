@@ -1912,7 +1912,7 @@ header {
     position: fixed;
 
     top: 0;
-    right: -380px;
+    left: -380px;
 
     width: 360px;
     max-width: 100%;
@@ -1924,15 +1924,16 @@ header {
 
     background: #fff;
 
-    box-shadow: -12px 0 35px rgba(15, 23, 42, .2);
+    box-shadow:
+        12px 0 35px rgba(15, 23, 42, .2);
 
-    transition: right .35s ease;
+    transition: left .35s ease;
 
     z-index: 2500;
 }
 
 .user-sidebar.active {
-    right: 0;
+    left: 0;
 }
 
 .user-sidebar-header {

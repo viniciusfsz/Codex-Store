@@ -983,15 +983,28 @@ checkoutBtn.addEventListener("click", function () {
 // FECHAR COM A TECLA ESC
 // ================================
 
-document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") {
-        modal.classList.remove("active");
-        modalCadastro.classList.remove("active");
-        userMenu.classList.remove("active");
+document.addEventListener(
+    "keydown",
+    function (event) {
 
-        fecharCarrinho();
+        if (event.key === "Escape") {
+
+            modal.classList.remove(
+                "active"
+            );
+
+            modalCadastro.classList.remove(
+                "active"
+            );
+
+            fecharUserSidebar();
+
+            fecharCarrinho();
+
+        }
+
     }
-});
+);
 
 
 // ================================
