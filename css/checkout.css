@@ -859,3 +859,102 @@ body {
     }
 
 }
+
+/* ==========================================================
+   AJUSTE FINAL - ETAPAS DO CHECKOUT NO MOBILE
+========================================================== */
+
+@media screen and (max-width: 700px) {
+
+    .checkout-progress-container {
+        width: 100%;
+        margin: 26px auto 0;
+        padding: 0 12px;
+        overflow: visible;
+    }
+
+    .checkout-progress {
+        width: 100%;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0;
+        overflow: visible;
+        padding-bottom: 0;
+    }
+
+    .progress-step {
+        min-width: 0;
+        width: auto;
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #94a3b8;
+    }
+
+    .progress-step span {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 2px solid #cbd5e1;
+        border-radius: 50%;
+        background: #fff;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .progress-step p {
+        margin-top: 7px;
+        font-size: 10px;
+        font-weight: 700;
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    .progress-step.active {
+        color: #0c9fda;
+    }
+
+    .progress-step.active span {
+        background: #0c9fda;
+        border-color: #0c9fda;
+        color: #fff;
+        box-shadow: 0 6px 15px rgba(12, 159, 218, .22);
+    }
+
+    .progress-line {
+        flex: 1;
+        width: auto;
+        min-width: 8px;
+        height: 2px;
+        margin: 15px 5px 0;
+        background: #dbe4ec;
+    }
+}
+
+@media screen and (max-width: 430px) {
+
+    .checkout-progress-container {
+        padding: 0 8px;
+        margin-top: 22px;
+    }
+
+    .progress-step span {
+        width: 28px;
+        height: 28px;
+        font-size: 10px;
+    }
+
+    .progress-step p {
+        margin-top: 6px;
+        font-size: 9px;
+    }
+
+    .progress-line {
+        min-width: 5px;
+        margin: 13px 3px 0;
+    }
+}
