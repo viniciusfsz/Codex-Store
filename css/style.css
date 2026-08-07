@@ -1485,11 +1485,34 @@ header {
 
 
     /* =======================
-        CARRINHO MOBILE
-    ========================== */
+    CARRINHO MOBILE
+========================== */
+
+@media screen and (max-width: 650px) {
 
     .cart-drawer {
         width: 100%;
+
+        height: 100dvh;
+        max-height: 100dvh;
+
+        overflow: hidden;
+    }
+
+    .cart-header {
+        flex-shrink: 0;
+
+        padding: 18px 20px;
+    }
+
+    .cart-items {
+        flex: 1;
+
+        min-height: 0;
+
+        overflow-y: auto;
+
+        padding: 16px 18px;
     }
 
     .cart-item {
@@ -1497,10 +1520,38 @@ header {
     }
 
     .cart-item img {
-        width: 70px;
-        height: 70px;
+        width: 65px;
+        height: 65px;
     }
 
+    .cart-footer {
+        flex-shrink: 0;
+
+        padding: 16px 18px;
+
+        background: #fff;
+
+        border-top: 1px solid #e5e7eb;
+
+        padding-bottom:
+            calc(16px + env(safe-area-inset-bottom));
+    }
+
+    .cart-total {
+        margin-bottom: 12px;
+
+        font-size: 18px;
+    }
+
+    .checkout-btn {
+        width: 100%;
+
+        padding: 14px;
+
+        font-size: 15px;
+    }
+
+}
 
     /* =======================
         HERO MOBILE
