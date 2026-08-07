@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codex Store</title>
+    <link rel="shortcut icon" href="imgs/five icon.png" type="image/png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- =======================
+  HEADER  
+=========================== -->
+    <header>
+        <div class="logo">
+            <img src="imgs/logo codex 1.png" alt="Logo CX Store">
+        </div>
+
+        <div class="search">
+            <input id="search" type="text" placeholder="Pesquisar produtos">
+        </div>
+
+        <div class="actions">
+            <div class="user-area">
+                <a href="#" id="loginBtn" class="login-link">
+                    <i class="fa-solid fa-circle-user user-icon"></i>
+                    <span id="userName"> Entrar </span></a>
+
+                <div class="user-menu" id="userMenu">
+                    <a href="compras.html">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                        Minhas Compras
+                    </a>
+                    <a href="minha-conta.html"> <i class="fa-solid fa-user"></i>
+                        Minha Conta
+                    </a>
+                    <a href="suporte.html"><i class="fa-solid fa-headset"></i>
+                        Suporte
+                    </a>
+                    <button id="logoutBtn" type="button">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        Sair
+                    </button>
+
+                    <button type="button" class="delete-account" id="deleteAccount">
+                        <i class="fa-solid fa-trash"></i>
+
+                        Excluir Conta
+                    </button>
+                </div>
+            </div>
+            <div class="cart" id="openCart">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- =======================
+ HERO
+=========================== -->
+    <section class="hero">
+        <div class="hero-content">
+            <img src="imgs/logo codex 2.png" alt="Logo CX Store" class="hero-logo">
+            <p>
+                Tecnologia para quem joga e trabalha com desempenho.
+                Os melhores produtos gamer em um só lugar.
+            </p>
+            <a href="#produtos" class="hero-btn">
+                Ver produtos
+            </a>
+        </div>
+    </section>
+
+    <!-- =======================
+    CATEGORIAS
+=========================== -->
+    <section class="categories">
+        <div class="categories-content">
+            <h2>Explore por categoria</h2>
+            <p>
+                Encontre os periféricos ideais para completar seu setup.
+            </p>
+            <div class="category-list">
+                <button type="button" class="category-btn active" data-category="todos">
+                    <i class="fa-solid fa-border-all"></i>
+                    Todos
+                </button>
+                <button type="button" class="category-btn" data-category="mouse">
+                    <i class="fa-solid fa-computer-mouse"></i>
+                    Mouse
+                </button>
+                <button type="button" class="category-btn" data-category="teclado">
+                    <i class="fa-solid fa-keyboard"></i>
+                    Teclados
+                </button>
+                <button type="button" class="category-btn" data-category="headset">
+                    <i class="fa-solid fa-headphones"></i>
+                    Headsets
+                </button>
+                <button type="button" class="category-btn" data-category="monitor">
+                    <i class="fa-solid fa-desktop"></i>
+                    Monitores
+                </button>
+                <button type="button" class="category-btn" data-category="notebook">
+                    <i class="fa-solid fa-laptop"></i>
+                    Notebooks
+                </button>
+                <button type="button" class="category-btn" data-category="cadeira">
+                    <i class="fa-solid fa-chair"></i>
+                    Cadeiras
+                </button>
+                <button type="button" class="category-btn" data-category="microfone">
+                    <i class="fa-solid fa-microphone"></i>
+                    Microfones
+                </button>
+                <button type="button" class="category-btn" data-category="webcam">
+                    <i class="fa-solid fa-video"></i>
+                    Webcams
+                </button>
+
+                <button type="button" class="category-btn" data-category="combo">
+                    <i class="fa-solid fa-gift"></i>
+                    Combos
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- =======================
+    PRODUTOS
+=========================== -->
+
+    <section class="products" id="produtos">
+        <div class="products-header">
+            <span>Nossa seleção</span>
+            <h2>Produtos em destaque</h2>
+            <p>
+                Equipamentos selecionados para elevar o nível do seu setup.
+            </p>
+        </div>
+        <div class="product-grid">
+
+            <!-- MOUSE -->
+            <article class="product-card" data-id="1" data-category="mouse" data-name="CX Phantom X1" data-price="79.90"
+                data-image="imgs/Mouse Gamer.png">
+                <div class="product-image">
+                    <span class="product-badge">Oferta</span>
+                    <img src="imgs/Mouse Gamer.png" alt="Mouse CX Phantom X1">
+                </div>
+                <div class="product-info">
+                    <span class="product-category"></span>
+                    <h3>CX Phantom X1</h3>
+                    <p class="product-description">
+                        Mouse leve com iluminação azul e alta precisão.
+                    </p>
+                    <p class="price">R$ 79,90</p>
+                    <button type="button" class="add-cart">
+                        <i class="fa-solid fa-cart-plus"></i>
+                        Adicionar ao carrinho
+                    </button>
+                </div>
+            </article>
+
+            <!-- TECLADO -->
+
+            <article class="product-card" data-id="2" data-category="teclado" data-name="CX Mechanical K80"
+                data-price="99.90" data-image="imgs/Teclado CX.png">
+                <div class="product-image">
+                    <span class="product-badge">Oferta</span>
+                    <img src="imgs/Teclado CX.png" alt="Teclado CX Mechanical K80">
+                </div>
+                <div class="product-info">
+                    <span class="product-category">Teclado mecânico</span>
+                    <h3>CX Mechanical K80</h3>
+                    <p class="product-description">
+                        Teclado mecânico com iluminação azul e resposta rápida.
+                    </p>
+                    <p class="price">R$ 99,90</p>
+                    <button type="button" class="add-cart">
+                        <i class="fa-solid fa-cart-plus"></i>
+                        Adicionar ao carrinho
+                    </button>
+                </div>
+            </article>
+
+            <!-- HEADSET -->
+            <article class="product-card" data-id="3" data-category="headset" data-name="CX Pulse H7" data-price="89.90"
+                data-image="imgs/Fone Gamer.png">
+                <div class="product-image">
+
+                    <span class="product-badge">
+                        Oferta
+                    </span>
+
+                    <img src="imgs/Fone Gamer.png" alt="Headset CX Pulse H7">
+
+                </div>
+
+                <div class="product-info">
+
+                    <span class="product-category">
+                        Headset Gamer
+                    </span>
+
+                    <h3>
+                        CX Pulse H7
+                    </h3>
+
+                    <p class="product-description">
+                        Som imersivo, microfone ajustável e conforto prolongado.
+                    </p>
+
+                    <p class="price">
+                        R$ 89,90
+                    </p>
+
+                    <button type="button" class="add-cart"> <i class="fa-solid fa-cart-plus"></i>
+                        Adicionar ao carrinho
+                    </button>
+
+                </div>
+
+            </article>
+
+            <!-- MONITOR -->
+
+            <article class="product-card" data-id="4" data-category="monitor" data-name="CX Vision 27"
+                data-price="2000.00" data-image="imgs/Monitor Gamer.png">
+                <div class="product-image">
+                    <span class="product-badge">Oferta</span>
+                    <img src="imgs/Monitor Gamer.png" alt="Monitor CX Vision 27">
+                </div>
+                <div class="product-info">
+                    <span class="product-category">Monitor gamer</span>
+                    <h3>CX Vision 27</h3>
+                    <p class="product-description">
+                        Tela ampla de 27 polegadas para jogos e produtividade.
+                    </p>
+                    <p class="price">R$ 2.000,00</p>
+                    <button type="button" class="add-cart">
+                        <i class="fa-solid fa-cart-plus"></i>
+                        Adicionar ao carrinho
+                    </button>
+                </div>
+            </article>
+
+            <!-- NOTEBOOK -->
+
+            <article class="product-card" data-id="5" data-category="notebook" data-name="CX NovaBook Pro 15"
+                data-price="3799.90" data-image="imgs/Notbook CX.png">
+                <div class="product-image">
+                    <span class="product-badge">Oferta</span>
+                    <img src="imgs/Notbook CX.png" alt="Notebook CX NovaBook Pro 15">
+                </div>
+                <div class="product-info">
+                    <span class="product-category">
+                        Notebook Gamer
+                    </span>
+                    <h3>CX NovaBook Pro 15</h3>
+                    <p class="product-description">
+                        Notebook potente para jogos, estudos e produtividade.
+                    </p>
+                    <p class="price">
+                        R$ 3.799,90
+                    </p>
+                    <button type="button" class="add-cart">
+                        <i class="fa-solid fa-cart-plus"></i>
+                        Adicionar ao carrinho
+                    </button>
+                </div>
+            </article>
+
+            <!-- CADEIRA -->
+
+            <article class="product-card" data-id="6" data-category="cadeira" data-name="CX Titan Chair"
+                data-price="1299.90" data-image="imgs/Cadeira CX.png">
+
+                <div class="product-image">
+
+                    <span class="product-badge">Oferta</span>
+
+                    <img src="imgs/Cadeira CX.png" alt="Cadeira CX Titan Chair">
+
+                </div>
+                <div class="product-info">
+                    <span class="product-category">
+                        Cadeira Gamer
+                    </span>
+                    <h3>CX Titan Chair</h3>
+                    <p class="product-description">
+                        Design ergonômico com apoio lombar e regulagem de altura.
+                    </p>
+                    <p class="price">
+                        R$ 1.299,90
+                    </p>
+                    <button type="button" class="add-cart">
+                        <i class="fa-solid fa-cart-plus"></i>
+                        Adicionar ao carrinho
+                    </button>
+
+                </div>
+
+            </article>
+
+
+            <!-- MICROFONE -->
+
+            <article class="product-card" data-id="7" data-category="microfone" data-name="CX Studio Mic"
+                data-price="599.90" data-image="imgs/Microfone CX.png">
+
+                <div class="product-image">
+
+                    <span class="product-badge">Oferta</span>
+
+                    <img src="imgs/Microfone CX.png" alt="Microfone CX Studio Mic">
+
+                </div>
+
+                <div class="product-info">
+
+                    <span class="product-category">
+                        Microfone USB
+                    </span>
+
+                    <h3>CX Studio Mic</h3>
+
+                    <p class="product-description">
+                        Captação nítida para lives, chamadas e criação de conteúdo.
+                    </p>
+
+                    <p class="price">
+                        R$ 599,90
+                    </p>
+
+                    <button type="button" class="add-cart">
+                        <i class="fa-solid fa-cart-plus"></i>
+                        Adicionar ao carrinho
+                    </button>
+
+                </div>
+
+            </article>
+
+            <!-- WEBCAM -->
+
+            <article class="product-card" data-id="8" data-category="webcam" data-name="CX StreamCam HD"
+                data-price="349.90" data-image="imgs/WebCam CX.png">
+
+                <div class="product-image">
+
+                    <span class="product-badge">Oferta</span>
+
+                    <img src="imgs/WebCam CX.png" alt="Webcam CX StreamCam HD">
+
+                </div>
+
+                <div class="product-info">
+                    <span class="product-category">
+                        Webcam Full HD
+                    </span>
+                    <h3>CX StreamCam HD</h3>
+
+                    <p class="product-description">
+                        Imagem em alta definição para reuniões, aulas e transmissões.
+                    </p>
+
+                    <p class="price">
+                        R$ 349,90
+                    </p>
+
+                    <button type="button" class="add-cart">
+                        <i class="fa-solid fa-cart-plus"></i>
+                        Adicionar ao carrinho
+                    </button>
+
+                </div>
+
+            </article>
+
+        </div>
+
+        <p class="empty-products" id="emptyProducts">
+            Nenhum produto encontrado nesta categoria.
+        </p>
+    </section>
+
+    <!-- =======================
+   CARRINHO LATERAL
+=========================== -->
+
+    <div class="cart-overlay" id="cartOverlay"></div>
+
+    <aside class="cart-drawer" id="cartDrawer">
+        <div class="cart-header">
+            <h2>Meu Carrinho</h2>
+            <button type="button" id="closeCart" aria-label="Fechar carrinho">
+                &times;
+            </button>
+        </div>
+
+        <div class="cart-items" id="cartItems">
+
+
+            <!-- Produtos inseridos pelo JavaScript -->
+        </div>
+
+        <p class="empty-cart" id="emptyCart">
+            Seu carrinho está vazio.
+        </p>
+
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total</span>
+                <strong id="cartTotal">R$ 0,00</strong>
+            </div>
+
+            <button type="button" class="checkout-btn">
+                Finalizar compra
+            </button>
+        </div>
+    </aside>
+
+    <!-- =======================
+    MODAL LOGIN
+=========================== -->
+
+    <div class="modal" id="modal">
+        <div class="login">
+            <button class="close-modal" type="button" aria-label="Fechar login">
+                &times;
+            </button>
+
+            <h2>Entrar</h2>
+
+            <form id="formLogin">
+                <label for="email">E-mail</label>
+
+                <input id="email" type="email" placeholder="Digite seu e-mail" required>
+
+                <label for="senha">Senha</label>
+
+                <input id="senha" type="password" placeholder="Digite sua senha" required>
+
+                <button class="btn-login" type="submit">
+                    Entrar
+                </button>
+            </form>
+
+            <p>
+                Não possui conta?
+                <a href="#" id="abrirCadastro">Cadastre-se</a>
+            </p>
+
+        </div>
+
+
+    </div>
+
+    <!-- =======================
+    MODAL CADASTRO
+=========================== -->
+
+    <div class="modal" id="modalCadastro">
+        <div class="login">
+            <button class="close-modal" id="fecharCadastro" type="button" aria-label="Fechar cadastro">
+                &times;
+            </button>
+
+            <h2>Criar Conta</h2>
+
+            <form id="formCadastro">
+                <label for="nomeCadastro">Nome</label>
+
+                <input type="text" id="nomeCadastro" placeholder="Digite seu nome" required>
+                <label for="emailCadastro">E-mail</label>
+
+                <input type="email" id="emailCadastro" placeholder="Digite seu e-mail" required>
+
+                <label for="senhaCadastro">Senha</label>
+
+                <input type="password" id="senhaCadastro" placeholder="Digite sua senha" required>
+
+                <button class="btn-login" type="submit">
+                    Cadastrar
+                </button>
+
+            </form>
+
+            <p>
+                Já possui uma conta?
+                <a href="#" id="voltarLogin">Entrar</a>
+            </p>
+        </div>
+
+    </div>
+    <!-- =======================
+        FOOTER
+=========================== -->
+
+    <footer class="footer">
+
+        <div class="footer-container">
+
+            <!-- Logo -->
+
+            <div class="footer-column">
+
+                <img src="imgs/logo codex 2.png" alt="CX Store" class="footer-logo">
+                <p>
+                    Tecnologia para quem joga e trabalha.
+                    Produtos de alta performance para gamers,
+                    criadores de conteúdo e profissionais.
+                </p>
+
+            </div>
+
+            <!-- Navegação -->
+
+            <div class="footer-column">
+
+                <h3>Navegação</h3>
+
+                <ul>
+
+                    <li><a href="#">Início</a></li>
+
+                    <li><a href="#produtos">Produtos</a></li>
+
+                    <li><a href="#">Categorias</a></li>
+
+                    <li><a href="minha-conta.html">Minha Conta</a></li>
+
+                </ul>
+
+            </div>
+
+            <!-- Suporte -->
+
+            <div class="footer-column">
+                <h3>Suporte</h3>
+
+                <ul>
+
+                    <li><a href="suporte.html">Central de Ajuda</a></li>
+
+                    <li><a href="suporte.html">Trocas e Devoluções</a></li>
+
+                    <li><a href="#">Política de Privacidade</a></li>
+
+                    <li><a href="#">Termos de Uso</a></li>
+
+                </ul>
+
+            </div>
+
+            <!-- Contato -->
+
+            <div class="footer-column">
+
+                <h3>Contato</h3>
+
+                <p>
+                    <i class="fa-solid fa-envelope"></i>
+                    contato@cxstore.com
+                </p>
+
+                <p>
+                    <i class="fa-solid fa-location-dot"></i>
+                    São Paulo - Brasil
+                </p>
+
+                <div class="footer-social">
+
+                    <a href="#">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+
+                    <a href="#">
+                        <i class="fa-brands fa-facebook-f"></i>
+                    </a>
+                    <a href="#">
+                        <i class="fa-brands fa-github"></i>
+                    </a>
+                    <a href="#">
+                        <i class="fa-brands fa-linkedin-in"></i>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+        <div class="footer-bottom">
+
+            <p>
+                © 2026 <strong>Codex Store</strong>. Todos os direitos reservados.
+            </p>
+
+        </div>
+
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+
+</html>

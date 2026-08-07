@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Minha Conta | Codex Store</title>
+
+    <link rel="shortcut icon" href="imgs/five icon.png" type="image/png">
+
+    <link rel="stylesheet" href="css/minha-conta.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+    <!-- =======================
+        HEADER
+    =========================== -->
+
+    <header class="account-header">
+
+        <a href="index.html" class="account-logo">
+
+            <img src="imgs/logo codex 2.png" alt="CX Store">
+
+        </a>
+
+        <a href="index.html" class="back-btn">
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Voltar para loja
+
+        </a>
+
+    </header>
+
+
+    <!-- =======================
+        CONTEÚDO PRINCIPAL
+    =========================== -->
+
+    <main class="account-page">
+
+        <!-- TÍTULO -->
+
+        <section class="account-title">
+
+            <span>Área do Cliente</span>
+
+            <h1>Minha Conta</h1>
+
+            <p>
+                Gerencie seus dados pessoais e acompanhe
+                as informações da sua conta.
+            </p>
+
+        </section>
+
+
+        <!-- =======================
+            CONTAINER
+        =========================== -->
+
+        <section class="account-container">
+
+            <!-- PERFIL -->
+
+            <aside class="profile-card">
+
+                <div class="profile-icon">
+
+                    <i class="fa-solid fa-circle-user"></i>
+
+                </div>
+
+                <h2 id="profileName">
+                    Usuário
+                </h2>
+
+                <p id="profileEmail">
+                    email@email.com
+                </p>
+
+                <div class="profile-divider"></div>
+
+                <a href="compras.html" class="profile-link">
+
+                    <i class="fa-solid fa-bag-shopping"></i>
+
+                    Minhas Compras
+
+                </a>
+
+                <button type="button" class="logout-account" id="logoutAccount">
+
+                    <i class="fa-solid fa-right-from-bracket"></i>
+
+                    Sair da Conta
+
+                </button>
+
+            </aside>
+
+
+            <!-- =======================
+                DADOS DA CONTA
+            =========================== -->
+
+            <div class="account-content">
+
+                <section class="account-card">
+
+                    <div class="account-card-title">
+
+                        <div class="account-card-icon">
+
+                            <i class="fa-solid fa-user"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h2>Dados pessoais</h2>
+
+                            <p>
+                                Atualize as informações da sua conta.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <form id="accountForm">
+
+                        <div class="form-grid">
+
+                            <!-- NOME -->
+
+                            <div class="form-group full">
+
+                                <label for="accountName">
+                                    Nome
+                                </label>
+
+                                <div class="input-icon">
+
+                                    <i class="fa-solid fa-user"></i>
+
+                                    <input type="text" id="accountName" placeholder="Digite seu nome" required>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- EMAIL -->
+
+                            <div class="form-group full">
+
+                                <label for="accountEmail">
+                                    E-mail
+                                </label>
+
+                                <div class="input-icon">
+
+                                    <i class="fa-solid fa-envelope"></i>
+
+                                    <input type="email" id="accountEmail" placeholder="Digite seu e-mail" required>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <button type="submit" class="save-btn">
+
+                            <i class="fa-solid fa-floppy-disk"></i>
+
+                            Salvar alterações
+
+                        </button>
+
+                    </form>
+
+                </section>
+
+
+                <!-- =======================
+                    ALTERAR SENHA
+                =========================== -->
+
+                <section class="account-card">
+
+                    <div class="account-card-title">
+
+                        <div class="account-card-icon">
+
+                            <i class="fa-solid fa-lock"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h2>Alterar senha</h2>
+
+                            <p>
+                                Escolha uma nova senha para sua conta.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <form id="passwordForm">
+
+                        <div class="form-grid">
+
+                            <!-- SENHA ATUAL -->
+
+                            <div class="form-group full">
+
+                                <label for="currentPassword">
+                                    Senha atual
+                                </label>
+
+                                <div class="input-icon">
+
+                                    <i class="fa-solid fa-key"></i>
+
+                                    <input type="password" id="currentPassword" placeholder="Digite sua senha atual"
+                                        required>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- NOVA SENHA -->
+
+                            <div class="form-group">
+
+                                <label for="newPassword">
+                                    Nova senha
+                                </label>
+
+                                <div class="input-icon">
+
+                                    <i class="fa-solid fa-lock"></i>
+
+                                    <input type="password" id="newPassword" placeholder="Nova senha" required>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- CONFIRMAR SENHA -->
+
+                            <div class="form-group">
+
+                                <label for="confirmPassword">
+                                    Confirmar senha
+                                </label>
+
+                                <div class="input-icon">
+
+                                    <i class="fa-solid fa-lock"></i>
+
+                                    <input type="password" id="confirmPassword" placeholder="Confirme a nova senha"
+                                        required>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <button type="submit" class="save-btn">
+
+                            <i class="fa-solid fa-shield-halved"></i>
+
+                            Alterar senha
+
+                        </button>
+
+                    </form>
+
+                </section>
+
+
+                <!-- =======================
+                    RESUMO
+                =========================== -->
+
+                <section class="account-card">
+
+                    <div class="account-card-title">
+
+                        <div class="account-card-icon">
+
+                            <i class="fa-solid fa-chart-simple"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h2>Resumo da conta</h2>
+
+                            <p>
+                                Veja algumas informações da sua atividade.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="account-stats">
+
+                        <div class="stat-card">
+
+                            <i class="fa-solid fa-bag-shopping"></i>
+
+                            <span>
+                                Pedidos
+                            </span>
+
+                            <strong id="ordersCount">
+                                0
+                            </strong>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <i class="fa-solid fa-check"></i>
+
+                            <span>
+                                Conta
+                            </span>
+
+                            <strong>
+                                Ativa
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =======================
+        FOOTER
+    =========================== -->
+
+    <footer class="account-footer">
+
+        <p>
+            © 2026 CX Store • Área do Cliente.
+        </p>
+
+    </footer>
+
+
+    <script src="js/minha-conta.js"></script>
+
+</body>
+
+</html>

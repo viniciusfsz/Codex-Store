@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Compras | Codex Store</title>
+    <link rel="shortcut icon" href="imgs/five icon.png" type="image/png">
+    <link rel="stylesheet" href="css/compras.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+    <!-- =======================
+    HEADER
+=========================== -->
+    <header class="header">
+        <a href="index.html" class="logo">
+            <img src="imgs/logo codex 2.png" alt="CX Store">
+
+        </a>
+
+        <a href="index.html" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i>
+            Voltar para loja
+        </a>
+
+    </header>
+
+
+    <!-- =======================
+    TÍTULO
+=========================== -->
+
+    <section class="page-title">
+
+        <span>Área do Cliente</span>
+
+        <h1>Minhas Compras</h1>
+        <p>
+            Aqui você acompanha todos os pedidos realizados
+            na CX Store.
+        </p>
+
+    </section>
+
+
+    <!-- =======================
+    LISTA DOS PEDIDOS
+=========================== -->
+
+    <main class="orders-container">
+
+        <div id="ordersList">
+
+            <!-- Os pedidos serão inseridos pelo JavaScript -->
+
+        </div>
+
+        <div class="empty-orders" id="emptyOrders">
+
+            <div class="empty-orders-card">
+
+                <div class="empty-orders-icon">
+                    <i class="fa-solid fa-box-open"></i>
+                </div>
+
+                <span class="empty-orders-label">
+                    Histórico vazio
+                </span>
+
+                <h2>
+                    Você ainda não fez nenhuma compra
+                </h2>
+
+                <p>
+                    Seus pedidos aparecerão aqui depois
+                    que você finalizar uma compra na CX Store.
+                </p>
+
+                <a href="index.html" class="shop-btn">
+                    <i class="fa-solid fa-store"></i>
+
+                    Explorar produtos
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- =======================
+    TEMPLATE DO PEDIDO
+=========================== -->
+
+    <template id="orderTemplate">
+
+        <div class="order-card">
+
+            <div class="order-header">
+
+                <div>
+
+                    <h3 class="order-id"></h3>
+
+                    <small class="order-date"></small>
+
+                </div>
+
+                <span class="order-status">
+
+                    Pedido realizado
+
+                </span>
+
+            </div>
+
+
+            <div class="order-products">
+
+                <!-- Produtos -->
+
+            </div>
+
+            <div class="order-footer">
+
+                <div>
+
+                    <span>Pagamento</span>
+
+                    <strong class="payment"></strong>
+
+                </div>
+
+                <div>
+
+                    <span>Total</span>
+
+                    <strong class="total"></strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </template>
+
+
+    <!-- =======================
+    FOOTER
+=========================== -->
+    <footer>
+        <p>
+            © 2026 CX Store • Todos os direitos reservados.
+        </p>
+
+    </footer>
+
+    <script src="js/compras.js"></script>
+
+</body>
+
+</html>

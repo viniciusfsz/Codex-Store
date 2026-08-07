@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finalizar Compra | Codex Store</title>
+  <link rel="shortcut icon" href="imgs/five icon.png" type="image/png">
+  <link rel="stylesheet" href="css/checkout.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+
+  <header class="checkout-header">
+
+    <a href="index.html" class="checkout-logo">
+      <img src="imgs/logo codex 2.png" alt="CX Store">
+    </a>
+    <div class="secure-checkout">
+      <i class="fa-solid fa-lock"></i>
+      Compra segura
+    </div>
+
+  </header>
+
+
+  <!--PROGRESSO  -->
+
+  <div class="checkout-progress-container">
+
+    <div class="checkout-progress">
+
+      <div class="progress-step active"> <span>1</span>
+        <p>Dados</p>
+      </div>
+
+      <div class="progress-line"></div>
+
+      <div class="progress-step active">
+        <span>2</span>
+        <p>Entrega</p>
+      </div>
+
+      <div class="progress-line"></div>
+
+      <div class="progress-step active">
+        <span>3</span>
+        <p>Pagamento</p>
+      </div>
+
+      <div class="progress-line"></div>
+
+      <div class="progress-step">
+        <span>4</span>
+        <p>Confirmação</p>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- CHECKOUT -->
+
+  <main class="checkout">
+
+    <div class="checkout-title">
+
+      <span>Finalização do pedido</span>
+
+      <h1>Checkout</h1>
+
+      <p>
+        Preencha seus dados para concluir sua compra.
+      </p>
+
+    </div>
+
+
+    <div class="checkout-layout">
+
+      <!-- DADOS -->
+
+      <div class="checkout-forms">
+
+        <!-- DADOS PESSOAIS -->
+
+        <section class="checkout-card">
+
+          <div class="checkout-card-title">
+
+            <span class="step-number">
+              1
+            </span>
+
+            <div>
+
+              <h2>Dados pessoais</h2>
+
+              <p>
+                Informe seus dados para identificação.
+              </p>
+
+            </div>
+
+          </div>
+
+          <div class="form-grid">
+
+            <div class="form-group full">
+
+              <label for="nome">
+                Nome completo
+              </label>
+
+              <input type="text" id="nome" placeholder="Digite seu nome completo" required>
+
+            </div>
+
+            <div class="form-group">
+
+              <label for="emailCheckout">
+                E-mail
+              </label>
+
+              <input type="email" id="emailCheckout" placeholder="seu@email.com" required>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label for="telefone">
+                Telefone
+              </label>
+
+              <input type="tel" id="telefone" placeholder="(00) 00000-0000" required>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- ENDEREÇO -->
+
+        <section class="checkout-card">
+
+          <div class="checkout-card-title">
+
+            <span class="step-number">
+              2
+            </span>
+
+            <div>
+              <h2>Endereço de entrega</h2>
+              <p>
+                Informe onde deseja receber seu pedido.
+              </p>
+            </div>
+
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="cep">
+                CEP
+              </label>
+
+              <input type="text" id="cep" placeholder="00000-000" required>
+
+            </div>
+
+            <div class="form-group">
+
+              <label for="cidade">
+                Cidade
+              </label>
+
+              <input type="text" id="cidade" placeholder="Sua cidade" required>
+
+            </div>
+
+            <div class="form-group full">
+
+              <label for="endereco">
+                Endereço
+              </label>
+
+              <input type="text" id="endereco" placeholder="Rua, avenida..." required>
+
+            </div>
+
+            <div class="form-group">
+
+              <label for="numero">
+                Número
+              </label>
+
+              <input type="text" id="numero" placeholder="123" required>
+
+            </div>
+
+
+            <div class="form-group">
+
+
+              <label for="complemento">
+                Complemento
+              </label>
+
+              <input type="text" id="complemento" placeholder="Apartamento, bloco...">
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- PAGAMENTO -->
+
+        <section class="checkout-card">
+
+          <div class="checkout-card-title">
+
+            <span class="step-number">
+              3
+            </span>
+
+            <div>
+              <h2>Forma de pagamento</h2>
+
+              <p>
+                Escolha como deseja pagar.
+              </p>
+
+
+            </div>
+
+          </div>
+
+
+          <div class="payment-options">
+
+            <label class="payment-option">
+
+              <input type="radio" name="payment" value="pix" checked>
+
+              <span>
+                <i class="fa-brands fa-pix"></i>
+
+                <strong>Pix</strong>
+
+                <small>
+                  Aprovação imediata
+                </small>
+
+              </span>
+
+            </label>
+
+
+            <label class="payment-option">
+
+              <input type="radio" name="payment" value="card">
+
+              <span>
+                <i class="fa-solid fa-credit-card"></i>
+
+                <strong>Cartão</strong>
+
+
+                <small>
+                  Crédito ou débito
+                </small>
+              </span>
+
+            </label>
+
+
+            <label class="payment-option">
+
+              <input type="radio" name="payment" value="boleto">
+
+              <span>
+                <i class="fa-solid fa-barcode"></i>
+
+                <strong>Boleto</strong>
+
+
+                <small>
+                  Pagamento bancário
+                </small>
+
+
+              </span>
+
+            </label>
+
+          </div>
+
+        </section>
+
+      </div>
+
+
+      <!-- RESUMO -->
+
+      <aside class="order-summary">
+
+        <h2>Resumo do pedido</h2>
+
+        <div class="checkout-items" id="checkoutItems">
+          <!-- JavaScript -->
+        </div>
+
+
+        <div class="summary-line">
+
+          <span>Subtotal</span>
+
+          <strong id="checkoutSubtotal">
+            R$ 0,00
+          </strong>
+
+        </div>
+
+
+        <div class="summary-line">
+
+          <span>Frete</span>
+
+          <strong class="free-shipping">
+            Grátis
+          </strong>
+
+        </div>
+
+
+        <div class="summary-total">
+
+          <span>Total</span>
+
+          <strong id="checkoutTotal">
+            R$ 0,00
+          </strong>
+
+        </div>
+
+
+        <button type="button" id="finishOrder" class="finish-order">
+
+          <i class="fa-solid fa-lock"></i>
+
+          Finalizar pedido
+        </button>
+
+
+        <a href="index.html" class="continue-shopping">
+
+          <i class="fa-solid fa-arrow-left"></i>
+
+          Continuar comprando
+        </a>
+
+      </aside>
+
+    </div>
+
+  </main>
+
+
+  <footer class="checkout-footer">
+
+    <p>
+      © 2026 CX Store • Ambiente de checkout demonstrativo.
+    </p>
+
+  </footer>
+
+
+  <script src="js/checkout.js"></script>
+
+</body>
+
+</html>
