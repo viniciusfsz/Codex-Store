@@ -17,160 +17,374 @@ const voltarLogin = document.querySelector("#voltarLogin");
 const formLogin = document.querySelector("#formLogin");
 const formCadastro = document.querySelector("#formCadastro");
 
-const userMenu = document.querySelector("#userMenu");
-const logoutBtn = document.querySelector("#logoutBtn");
+
+// ================================
+// ELEMENTOS DA SIDEBAR DO USUÁRIO
+// ================================
+
+const userSidebar =
+    document.querySelector("#userSidebar");
+
+const userOverlay =
+    document.querySelector("#userOverlay");
+
+const closeUserSidebar =
+    document.querySelector("#closeUserSidebar");
+
+const sidebarLogout =
+    document.querySelector("#sidebarLogout");
+
+const sidebarUserName =
+    document.querySelector("#sidebarUserName");
+
+const sidebarUserEmail =
+    document.querySelector("#sidebarUserEmail");
 
 
 // ================================
-// ABRIR LOGIN OU MENU DO USUÁRIO
+// ABRIR SIDEBAR
 // ================================
 
-loginBtn.addEventListener("click", function (event) {
-    event.preventDefault();
+function abrirUserSidebar() {
 
-    const usuarioLogado = JSON.parse(
-        localStorage.getItem("usuarioLogado")
+    const usuarioLogado =
+        JSON.parse(
+            localStorage.getItem("usuarioLogado")
+        );
+
+    if (!usuarioLogado) {
+        return;
+    }
+
+
+    sidebarUserName.textContent =
+        usuarioLogado.nome || "Usuário";
+
+
+    sidebarUserEmail.textContent =
+        usuarioLogado.email || "";
+
+
+    userSidebar.classList.add("active");
+
+    userOverlay.classList.add("active");
+
+    document.body.classList.add(
+        "user-sidebar-open"
     );
 
-    if (usuarioLogado) {
-        userMenu.classList.toggle("active");
-    } else {
-        modal.classList.add("active");
+}
+
+
+// ================================
+// FECHAR SIDEBAR
+// ================================
+
+function fecharUserSidebar() {
+
+    userSidebar.classList.remove("active");
+
+    userOverlay.classList.remove("active");
+
+    document.body.classList.remove(
+        "user-sidebar-open"
+    );
+
+}
+
+
+// ================================
+// ABRIR LOGIN OU SIDEBAR
+// ================================
+
+loginBtn.addEventListener(
+    "click",
+    function (event) {
+
+        event.preventDefault();
+
+
+        const usuarioLogado =
+            JSON.parse(
+                localStorage.getItem(
+                    "usuarioLogado"
+                )
+            );
+
+
+        if (usuarioLogado) {
+
+            abrirUserSidebar();
+
+        } else {
+
+            modal.classList.add("active");
+
+        }
+
     }
-});
+);
+
+
+// ================================
+// FECHAR SIDEBAR NO X
+// ================================
+
+closeUserSidebar.addEventListener(
+    "click",
+    fecharUserSidebar
+);
+
+
+// ================================
+// FECHAR SIDEBAR NO FUNDO
+// ================================
+
+userOverlay.addEventListener(
+    "click",
+    fecharUserSidebar
+);
 
 
 // ================================
 // FECHAR MODAL DE LOGIN
 // ================================
 
-fecharModal.addEventListener("click", function () {
-    modal.classList.remove("active");
-});
+fecharModal.addEventListener(
+    "click",
+    function () {
+
+        modal.classList.remove("active");
+
+    }
+);
 
 
 // ================================
 // ABRIR CADASTRO
 // ================================
 
-abrirCadastro.addEventListener("click", function (event) {
-    event.preventDefault();
+abrirCadastro.addEventListener(
+    "click",
+    function (event) {
 
-    modal.classList.remove("active");
-    modalCadastro.classList.add("active");
-});
+        event.preventDefault();
+
+        modal.classList.remove("active");
+
+        modalCadastro.classList.add("active");
+
+    }
+);
 
 
 // ================================
 // FECHAR CADASTRO
 // ================================
 
-fecharCadastro.addEventListener("click", function () {
-    modalCadastro.classList.remove("active");
-});
+fecharCadastro.addEventListener(
+    "click",
+    function () {
+
+        modalCadastro.classList.remove(
+            "active"
+        );
+
+    }
+);
 
 
 // ================================
 // VOLTAR PARA LOGIN
 // ================================
 
-voltarLogin.addEventListener("click", function (event) {
-    event.preventDefault();
+voltarLogin.addEventListener(
+    "click",
+    function (event) {
 
-    modalCadastro.classList.remove("active");
-    modal.classList.add("active");
-});
+        event.preventDefault();
+
+        modalCadastro.classList.remove(
+            "active"
+        );
+
+        modal.classList.add("active");
+
+    }
+);
 
 
 // ================================
 // CADASTRO COM LOCALSTORAGE
 // ================================
 
-formCadastro.addEventListener("submit", function (event) {
-    event.preventDefault();
+formCadastro.addEventListener(
+    "submit",
+    function (event) {
 
-    const nome = document
-        .querySelector("#nomeCadastro")
-        .value
-        .trim();
+        event.preventDefault();
 
-    const email = document
-        .querySelector("#emailCadastro")
-        .value
-        .trim()
-        .toLowerCase();
 
-    const senha = document
-        .querySelector("#senhaCadastro")
-        .value;
+        const nome =
+            document
+                .querySelector("#nomeCadastro")
+                .value
+                .trim();
 
-    const usuario = {
-        nome: nome,
-        email: email,
-        senha: senha
-    };
 
-    localStorage.setItem(
-        "usuario",
-        JSON.stringify(usuario)
-    );
+        const email =
+            document
+                .querySelector("#emailCadastro")
+                .value
+                .trim()
+                .toLowerCase();
 
-    alert("Conta criada com sucesso!");
 
-    formCadastro.reset();
+        const senha =
+            document
+                .querySelector("#senhaCadastro")
+                .value;
 
-    modalCadastro.classList.remove("active");
-    modal.classList.add("active");
-});
+
+        if (!nome || !email || !senha) {
+
+            alert(
+                "Preencha todos os campos."
+            );
+
+            return;
+
+        }
+
+
+        const usuario = {
+
+            nome: nome,
+
+            email: email,
+
+            senha: senha
+
+        };
+
+
+        localStorage.setItem(
+            "usuario",
+            JSON.stringify(usuario)
+        );
+
+
+        alert(
+            "Conta criada com sucesso!"
+        );
+
+
+        formCadastro.reset();
+
+        modalCadastro.classList.remove(
+            "active"
+        );
+
+        modal.classList.add("active");
+
+    }
+);
 
 
 // ================================
 // LOGIN
 // ================================
 
-formLogin.addEventListener("submit", function (event) {
-    event.preventDefault();
+formLogin.addEventListener(
+    "submit",
+    function (event) {
 
-    const email = document
-        .querySelector("#email")
-        .value
-        .trim()
-        .toLowerCase();
+        event.preventDefault();
 
-    const senha = document
-        .querySelector("#senha")
-        .value;
 
-    const usuario = JSON.parse(
-        localStorage.getItem("usuario")
-    );
+        const email =
+            document
+                .querySelector("#email")
+                .value
+                .trim()
+                .toLowerCase();
 
-    if (!usuario) {
-        alert("Nenhuma conta cadastrada.");
-        return;
+
+        const senha =
+            document
+                .querySelector("#senha")
+                .value;
+
+
+        const usuario =
+            JSON.parse(
+                localStorage.getItem(
+                    "usuario"
+                )
+            );
+
+
+        if (!usuario) {
+
+            alert(
+                "Nenhuma conta cadastrada."
+            );
+
+            return;
+
+        }
+
+
+        const dadosCorretos =
+
+            email === usuario.email &&
+
+            senha === usuario.senha;
+
+
+        if (dadosCorretos) {
+
+            localStorage.setItem(
+                "usuarioLogado",
+                JSON.stringify(usuario)
+            );
+
+
+            userName.textContent =
+                `Olá, ${usuario.nome}`;
+
+
+            sidebarUserName.textContent =
+                usuario.nome;
+
+
+            sidebarUserEmail.textContent =
+                usuario.email;
+
+
+            modal.classList.remove(
+                "active"
+            );
+
+
+            formLogin.reset();
+
+
+            alert(
+                "Login realizado com sucesso!"
+            );
+
+
+        } else {
+
+            alert(
+                "E-mail ou senha incorretos."
+            );
+
+        }
+
     }
-
-    const dadosCorretos =
-        email === usuario.email &&
-        senha === usuario.senha;
-
-    if (dadosCorretos) {
-        localStorage.setItem(
-            "usuarioLogado",
-            JSON.stringify(usuario)
-        );
-
-        userName.textContent = `Olá, ${usuario.nome}`;
-
-        modal.classList.remove("active");
-
-        formLogin.reset();
-
-        alert("Login realizado com sucesso!");
-    } else {
-        alert("E-mail ou senha incorretos.");
-    }
-});
+);
 
 
 // ================================
@@ -178,102 +392,106 @@ formLogin.addEventListener("submit", function (event) {
 // ================================
 
 function verificarUsuarioLogado() {
-    const usuarioLogado = JSON.parse(
-        localStorage.getItem("usuarioLogado")
-    );
+
+    const usuarioLogado =
+        JSON.parse(
+            localStorage.getItem(
+                "usuarioLogado"
+            )
+        );
+
 
     if (usuarioLogado) {
-        userName.textContent = `Olá, ${usuarioLogado.nome}`;
+
+        userName.textContent =
+            `Olá, ${usuarioLogado.nome}`;
+
+
+        sidebarUserName.textContent =
+            usuarioLogado.nome || "Usuário";
+
+
+        sidebarUserEmail.textContent =
+            usuarioLogado.email || "";
+
+
     } else {
-        userName.textContent = "Entrar";
+
+        userName.textContent =
+            "Entrar";
+
     }
+
 }
+
 
 verificarUsuarioLogado();
 
 
 // ================================
-// LOGOUT
+// LOGOUT PELA SIDEBAR
 // ================================
 
-logoutBtn.addEventListener("click", function () {
-    localStorage.removeItem("usuarioLogado");
-
-    userName.textContent = "Entrar";
-
-    userMenu.classList.remove("active");
-
-    alert("Você saiu da sua conta.");
-});
-
-
-// ================================
-// EXCLUIR CONTA
-// ================================
-
-deleteAccount.addEventListener(
+sidebarLogout.addEventListener(
     "click",
     function () {
 
-        const confirmar = confirm(
-            "Tem certeza que deseja excluir sua conta?\n\nEssa ação não poderá ser desfeita."
+        localStorage.removeItem(
+            "usuarioLogado"
         );
 
-        if (!confirmar) {
 
-            return;
+        userName.textContent =
+            "Entrar";
 
-        }
 
-        localStorage.removeItem("usuario");
+        fecharUserSidebar();
 
-        localStorage.removeItem("usuarioLogado");
-
-        localStorage.removeItem("pedidos");
-
-        localStorage.removeItem("carrinho");
 
         alert(
-            "Sua conta foi excluída com sucesso."
+            "Você saiu da sua conta."
         );
-
-        window.location.href =
-            "index.html";
 
     }
 );
-
-// ================================
-// FECHAR MENU CLICANDO FORA
-// ================================
-
-document.addEventListener("click", function (event) {
-    const clicouNaAreaDoUsuario =
-        event.target.closest(".user-area");
-
-    if (!clicouNaAreaDoUsuario) {
-        userMenu.classList.remove("active");
-    }
-});
 
 
 // ================================
 // FECHAR MODAIS CLICANDO NO FUNDO
 // ================================
 
-modal.addEventListener("click", function (event) {
-    if (event.target === modal) {
-        modal.classList.remove("active");
+modal.addEventListener(
+    "click",
+    function (event) {
+
+        if (event.target === modal) {
+
+            modal.classList.remove(
+                "active"
+            );
+
+        }
+
     }
-});
+);
 
-modalCadastro.addEventListener("click", function (event) {
-    if (event.target === modalCadastro) {
-        modalCadastro.classList.remove("active");
+
+modalCadastro.addEventListener(
+    "click",
+    function (event) {
+
+        if (
+            event.target === modalCadastro
+        ) {
+
+            modalCadastro.classList.remove(
+                "active"
+            );
+
+        }
+
     }
-});
-
-
+);
 // ================================
 // FILTRO POR CATEGORIA
 // ================================

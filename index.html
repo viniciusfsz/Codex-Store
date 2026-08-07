@@ -25,40 +25,163 @@
         </div>
 
         <div class="actions">
+
+            <!-- USUÁRIO -->
+
             <div class="user-area">
+
                 <a href="#" id="loginBtn" class="login-link">
+
                     <i class="fa-solid fa-circle-user user-icon"></i>
-                    <span id="userName"> Entrar </span></a>
 
-                <div class="user-menu" id="userMenu">
-                    <a href="compras.html">
-                        <i class="fa-solid fa-bag-shopping"></i>
-                        Minhas Compras
-                    </a>
-                    <a href="minha-conta.html"> <i class="fa-solid fa-user"></i>
-                        Minha Conta
-                    </a>
-                    <a href="suporte.html"><i class="fa-solid fa-headset"></i>
-                        Suporte
-                    </a>
-                    <button id="logoutBtn" type="button">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                        Sair
-                    </button>
+                    <span id="userName">
+                        Entrar
+                    </span>
 
-                    <button type="button" class="delete-account" id="deleteAccount">
-                        <i class="fa-solid fa-trash"></i>
+                </a>
 
-                        Excluir Conta
-                    </button>
-                </div>
             </div>
+
+
+            <!-- CARRINHO -->
+
             <div class="cart" id="openCart">
+
                 <i class="fa-solid fa-cart-shopping"></i>
-                <span class="cart-count">0</span>
+
+                <span class="cart-count">
+                    0
+                </span>
+
             </div>
+
         </div>
+
     </header>
+
+
+    <!-- =======================
+        SIDEBAR DO USUÁRIO
+    =========================== -->
+
+    <div
+        class="user-overlay"
+        id="userOverlay"
+    ></div>
+
+
+    <aside
+        class="user-sidebar"
+        id="userSidebar"
+    >
+
+        <!-- CABEÇALHO -->
+
+        <div class="user-sidebar-header">
+
+            <div class="user-profile">
+
+                <i class="fa-solid fa-circle-user"></i>
+
+                <div>
+
+                    <strong id="sidebarUserName">
+                        Usuário
+                    </strong>
+
+                    <span id="sidebarUserEmail">
+                        email@email.com
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="closeUserSidebar"
+                class="close-user-sidebar"
+                aria-label="Fechar menu"
+            >
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+
+        <!-- NAVEGAÇÃO -->
+
+        <nav class="user-sidebar-nav">
+
+            <a href="compras.html">
+
+                <i class="fa-solid fa-bag-shopping"></i>
+
+                <span>
+                    Minhas Compras
+                </span>
+
+            </a>
+
+
+            <a href="minha-conta.html">
+
+                <i class="fa-solid fa-user"></i>
+
+                <span>
+                    Minha Conta
+                </span>
+
+            </a>
+
+
+            <a href="suporte.html">
+
+                <i class="fa-solid fa-headset"></i>
+
+                <span>
+                    Suporte
+                </span>
+
+            </a>
+
+        </nav>
+
+
+        <!-- RODAPÉ DA SIDEBAR -->
+
+        <div class="user-sidebar-footer">
+
+            <button
+                type="button"
+                id="sidebarLogout"
+                class="sidebar-logout"
+            >
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                Sair da Conta
+
+            </button>
+
+
+            <a
+                href="minha-conta.html"
+                class="sidebar-delete-link"
+            >
+
+                <i class="fa-solid fa-trash"></i>
+
+                Excluir Conta
+
+            </a>
+
+        </div>
+
+    </aside>
 
     <!-- =======================
  HERO
