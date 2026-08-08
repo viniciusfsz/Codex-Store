@@ -2188,3 +2188,56 @@ body.user-sidebar-open {
         max-width: 145px;
     }
 }
+
+/* ===========================
+   CARRINHO - MOBILE
+=========================== */
+
+@media (max-width: 768px) {
+
+    .cart-drawer {
+        height: 100dvh;
+        max-height: 100dvh;
+
+        display: flex;
+        flex-direction: column;
+
+        overflow: hidden;
+    }
+
+
+    /* ÁREA DOS PRODUTOS */
+
+    .cart-items {
+        flex: 1;
+
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        min-height: 0;
+
+        padding-bottom: 20px;
+    }
+
+
+    /* PARTE DO TOTAL + BOTÃO */
+
+    .cart-footer {
+        flex-shrink: 0;
+
+        padding-bottom:
+            calc(20px + env(safe-area-inset-bottom));
+
+        background: #fff;
+    }
+
+
+    /* BOTÃO FINALIZAR */
+
+    .checkout-btn {
+        width: 100%;
+
+        margin-bottom: 0;
+    }
+
+}
