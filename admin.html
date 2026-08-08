@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Painel Administrativo | Codex Store</title>
+
+    <link
+        rel="stylesheet"
+        href="css/admin.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+</head>
+
+<body>
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="admin-sidebar" id="adminSidebar">
+
+        <div class="sidebar-header">
+
+            <a href="admin.html" class="admin-brand">
+                <i class="fa-solid fa-code"></i>
+
+                <div>
+                    <strong>CODEX</strong>
+                    <span>Admin</span>
+                </div>
+            </a>
+
+            <button
+                type="button"
+                class="close-sidebar"
+                id="closeSidebar"
+                aria-label="Fechar menu"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+
+        <nav class="admin-nav">
+
+            <button
+                type="button"
+                class="admin-nav-link active"
+                data-section="dashboard"
+            >
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Dashboard</span>
+            </button>
+
+
+            <button
+                type="button"
+                class="admin-nav-link"
+                data-section="clientes"
+            >
+                <i class="fa-solid fa-users"></i>
+                <span>Clientes</span>
+            </button>
+
+
+            <button
+                type="button"
+                class="admin-nav-link"
+                data-section="pedidos"
+            >
+                <i class="fa-solid fa-box"></i>
+                <span>Pedidos</span>
+            </button>
+
+
+            <button
+                type="button"
+                class="admin-nav-link"
+                data-section="tickets"
+            >
+                <i class="fa-solid fa-headset"></i>
+                <span>Tickets</span>
+            </button>
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <a href="index.html" class="store-link">
+                <i class="fa-solid fa-store"></i>
+                <span>Ver loja</span>
+            </a>
+
+
+            <button
+                type="button"
+                class="logout-btn"
+                id="logoutBtn"
+            >
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sair</span>
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- FUNDO MOBILE -->
+
+    <div
+        class="sidebar-overlay"
+        id="sidebarOverlay"
+    ></div>
+
+
+    <!-- =========================
+         CONTEÚDO
+    ========================== -->
+
+    <main class="admin-main">
+
+        <!-- HEADER -->
+
+        <header class="admin-header">
+
+            <div class="header-left">
+
+                <button
+                    type="button"
+                    class="menu-btn"
+                    id="menuBtn"
+                    aria-label="Abrir menu"
+                >
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <div>
+                    <h1 id="pageTitle">Dashboard</h1>
+
+                    <p>
+                        Gerencie sua Codex Store
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="admin-user">
+
+                <div class="admin-avatar">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+
+                <div class="admin-user-info">
+
+                    <strong id="adminName">
+                        Administrador
+                    </strong>
+
+                    <span id="adminEmail">
+                        Carregando...
+                    </span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =========================
+             DASHBOARD
+        ========================== -->
+
+        <section
+            class="admin-section active"
+            id="dashboard"
+        >
+
+            <div class="welcome-admin">
+
+                <div>
+                    <span class="section-label">
+                        VISÃO GERAL
+                    </span>
+
+                    <h2>
+                        Bem-vindo ao painel
+                    </h2>
+
+                    <p>
+                        Acompanhe clientes, pedidos e
+                        atendimentos da loja.
+                    </p>
+                </div>
+
+                <i class="fa-solid fa-chart-pie"></i>
+
+            </div>
+
+
+            <!-- CARDS -->
+
+            <div class="stats-grid">
+
+                <article class="stat-card">
+
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+
+                    <div>
+                        <span>Clientes</span>
+
+                        <strong id="totalClientes">
+                            --
+                        </strong>
+                    </div>
+
+                </article>
+
+
+                <article class="stat-card">
+
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-box"></i>
+                    </div>
+
+                    <div>
+                        <span>Pedidos</span>
+
+                        <strong id="totalPedidos">
+                            --
+                        </strong>
+                    </div>
+
+                </article>
+
+
+                <article class="stat-card">
+
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+
+                    <div>
+                        <span>Tickets</span>
+
+                        <strong id="totalTickets">
+                            --
+                        </strong>
+                    </div>
+
+                </article>
+
+
+                <article class="stat-card">
+
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-dollar-sign"></i>
+                    </div>
+
+                    <div>
+                        <span>Faturamento</span>
+
+                        <strong id="totalFaturamento">
+                            R$ --
+                        </strong>
+                    </div>
+
+                </article>
+
+            </div>
+
+
+            <!-- ÚLTIMOS PEDIDOS -->
+
+            <div class="admin-card">
+
+                <div class="card-header">
+
+                    <div>
+                        <h2>Últimos pedidos</h2>
+
+                        <p>
+                            Pedidos realizados recentemente.
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="text-btn"
+                        data-go-section="pedidos"
+                    >
+                        Ver todos
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+
+                </div>
+
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Pedido</th>
+                                <th>Cliente</th>
+                                <th>Data</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="ultimosPedidosBody">
+
+                            <tr>
+                                <td
+                                    colspan="5"
+                                    class="loading-table"
+                                >
+                                    Carregando pedidos...
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             CLIENTES
+        ========================== -->
+
+        <section
+            class="admin-section"
+            id="clientes"
+        >
+
+            <div class="section-heading">
+
+                <div>
+                    <span class="section-label">
+                        USUÁRIOS
+                    </span>
+
+                    <h2>Clientes cadastrados</h2>
+
+                    <p>
+                        Contas cadastradas na Codex Store.
+                    </p>
+                </div>
+
+
+                <div class="admin-search">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input
+                        type="search"
+                        id="searchClientes"
+                        placeholder="Buscar cliente..."
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="admin-card">
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>E-mail</th>
+                                <th>Tipo</th>
+                                <th>Cadastro</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="clientesBody">
+
+                            <tr>
+                                <td
+                                    colspan="4"
+                                    class="loading-table"
+                                >
+                                    Carregando clientes...
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             PEDIDOS
+        ========================== -->
+
+        <section
+            class="admin-section"
+            id="pedidos"
+        >
+
+            <div class="section-heading">
+
+                <div>
+                    <span class="section-label">
+                        VENDAS
+                    </span>
+
+                    <h2>Pedidos</h2>
+
+                    <p>
+                        Acompanhe as compras realizadas
+                        pelos clientes.
+                    </p>
+                </div>
+
+
+                <div class="admin-search">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input
+                        type="search"
+                        id="searchPedidos"
+                        placeholder="Buscar pedido..."
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="admin-card">
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Pedido</th>
+                                <th>Cliente</th>
+                                <th>Data</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="pedidosBody">
+
+                            <tr>
+                                <td
+                                    colspan="6"
+                                    class="loading-table"
+                                >
+                                    Carregando pedidos...
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             TICKETS
+        ========================== -->
+
+        <section
+            class="admin-section"
+            id="tickets"
+        >
+
+            <div class="section-heading">
+
+                <div>
+                    <span class="section-label">
+                        SUPORTE
+                    </span>
+
+                    <h2>Tickets</h2>
+
+                    <p>
+                        Solicitações de suporte enviadas
+                        pelos clientes.
+                    </p>
+                </div>
+
+
+                <div class="admin-search">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input
+                        type="search"
+                        id="searchTickets"
+                        placeholder="Buscar ticket..."
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="admin-card">
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Assunto</th>
+                                <th>Cliente</th>
+                                <th>Data</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="ticketsBody">
+
+                            <tr>
+                                <td
+                                    colspan="5"
+                                    class="loading-table"
+                                >
+                                    Carregando tickets...
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================
+         MODAL
+    ========================== -->
+
+    <div
+        class="admin-modal"
+        id="adminModal"
+    >
+
+        <div class="admin-modal-content">
+
+            <button
+                type="button"
+                class="close-modal"
+                id="closeModal"
+                aria-label="Fechar"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div id="modalContent">
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         SUPABASE
+    ========================== -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+    ></script>
+
+    <script src="js/supabase.js"></script>
+
+
+    <!-- =========================
+         ADMIN
+    ========================== -->
+
+    <script src="js/admin.js"></script>
+
+</body>
+
+</html>

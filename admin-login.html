@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Login | Codex Store</title>
+
+    <link
+        rel="shortcut icon"
+        href="imgs/five icon.png"
+        type="image/png"
+    >
+
+    <link
+        rel="stylesheet"
+        href="css/adm-login.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+</head>
+
+<body>
+
+
+<!-- =======================
+    CONTAINER
+=========================== -->
+
+<main class="admin-login-page">
+
+
+    <!-- =======================
+        LOGIN
+    =========================== -->
+
+    <section class="admin-login-card">
+
+
+        <!-- LOGO -->
+
+        <div class="admin-logo">
+
+            <img
+                src="imgs/logo codex 2.png"
+                alt="Codex Store"
+            >
+
+        </div>
+
+
+        <!-- TÍTULO -->
+
+        <div class="admin-login-title">
+
+            <span>
+                Painel Administrativo
+            </span>
+
+            <h1>
+                Acesso do Administrador
+            </h1>
+
+            <p>
+                Entre com sua conta administrativa
+                para acessar o painel da Codex Store.
+            </p>
+
+        </div>
+
+
+        <!-- FORMULÁRIO -->
+
+        <form id="adminLoginForm">
+
+
+            <!-- EMAIL -->
+
+            <div class="form-group">
+
+                <label for="adminEmail">
+
+                    E-mail
+
+                </label>
+
+
+                <div class="input-group">
+
+                    <i class="fa-solid fa-envelope"></i>
+
+                    <input
+                        type="email"
+                        id="adminEmail"
+                        placeholder="admin@email.com"
+                        autocomplete="email"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- SENHA -->
+
+            <div class="form-group">
+
+                <label for="adminPassword">
+
+                    Senha
+
+                </label>
+
+
+                <div class="input-group">
+
+                    <i class="fa-solid fa-lock"></i>
+
+                    <input
+                        type="password"
+                        id="adminPassword"
+                        placeholder="Digite sua senha"
+                        autocomplete="current-password"
+                        required
+                    >
+
+
+                    <button
+                        type="button"
+                        class="show-password"
+                        id="showPassword"
+                        aria-label="Mostrar senha"
+                    >
+
+                        <i
+                            class="fa-solid fa-eye"
+                            id="passwordIcon"
+                        ></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- ERRO -->
+
+            <div
+                class="login-message"
+                id="loginMessage"
+            ></div>
+
+
+            <!-- BOTÃO -->
+
+            <button
+                type="submit"
+                class="admin-login-btn"
+                id="adminLoginBtn"
+            >
+
+                <i class="fa-solid fa-right-to-bracket"></i>
+
+                Entrar no painel
+
+            </button>
+
+        </form>
+
+
+        <!-- VOLTAR -->
+
+        <a
+            href="index.html"
+            class="back-store"
+        >
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Voltar para a loja
+
+        </a>
+
+
+        <!-- SEGURANÇA -->
+
+        <div class="admin-security">
+
+            <i class="fa-solid fa-shield-halved"></i>
+
+            <div>
+
+                <strong>
+                    Área restrita
+                </strong>
+
+                <p>
+                    O acesso é permitido somente
+                    para administradores autorizados.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+
+<!-- =======================
+    SUPABASE
+=========================== -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+></script>
+
+
+<script src="js/supabase.js"></script>
+
+
+<!-- =======================
+    LOGIN ADMIN
+=========================== -->
+
+<script src="js/admin-login.js"></script>
+
+
+</body>
+
+</html>
