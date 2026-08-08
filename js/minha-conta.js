@@ -37,73 +37,181 @@ const logoutAccount =
 
 
 // ================================
-// RECUPERAR USUÁRIO LOGADO
+// USUÁRIO ATUAL
 // ================================
 
-let usuarioLogado =
-    JSON.parse(
-        localStorage.getItem("usuarioLogado")
-    );
+let usuarioAtual = null;
 
-
-// ================================
-// PROTEGER PÁGINA
-// ================================
-
-if (!usuarioLogado) {
-
-    alert(
-        "Você precisa estar logado para acessar sua conta."
-    );
-
-    window.location.href =
-        "index.html";
-
-}
+let perfilAtual = null;
 
 
 // ================================
-// CARREGAR DADOS DO USUÁRIO
+// BUSCAR USUÁRIO LOGADO
 // ================================
 
-function carregarUsuario() {
+async function carregarUsuario() {
+
+    const {
+        data: {
+            user
+        },
+        error
+    } =
+        await supabaseClient
+            .auth
+            .getUser();
+
+
+    if (error) {
+
+        console.error(
+            "Erro ao buscar usuário:",
+            error
+        );
+
+    }
+
+
+    // ================================
+    // PROTEGER PÁGINA
+    // ================================
+
+    if (!user) {
+
+        alert(
+            "Você precisa estar logado para acessar sua conta."
+        );
+
+
+        window.location.href =
+            "index.html";
+
+
+        return;
+
+    }
+
+
+    usuarioAtual =
+        user;
+
+
+    // ================================
+    // BUSCAR PERFIL
+    // ================================
+
+    const {
+        data: perfil,
+        error: profileError
+    } =
+        await supabaseClient
+            .from("profiles")
+            .select(
+                "id, nome, email"
+            )
+            .eq(
+                "id",
+                user.id
+            )
+            .maybeSingle();
+
+
+    if (profileError) {
+
+        console.error(
+            "Erro ao carregar perfil:",
+            profileError
+        );
+
+    }
+
+
+    perfilAtual =
+        perfil;
+
+
+    // ================================
+    // DADOS PARA EXIBIÇÃO
+    // ================================
+
+    const nome =
+
+        perfil?.nome ||
+
+        user
+            .user_metadata
+            ?.nome ||
+
+        "Usuário";
+
+
+    const email =
+
+        perfil?.email ||
+
+        user.email ||
+
+        "";
+
 
     profileName.textContent =
-        usuarioLogado.nome;
+        nome;
+
 
     profileEmail.textContent =
-        usuarioLogado.email;
+        email;
+
 
     accountName.value =
-        usuarioLogado.nome;
+        nome;
+
 
     accountEmail.value =
-        usuarioLogado.email;
-
-}
+        email;
 
 
-carregarUsuario();
-
-
-// ================================
-// CONTAR PEDIDOS
+    // ================================
+// CONTAR PEDIDOS DO USUÁRIO
 // ================================
 
-function contarPedidos() {
+const {
+    count: quantidadePedidos,
+    error: ordersError
+} =
+    await supabaseClient
+        .from("orders")
+        .select(
+            "*",
+            {
+                count: "exact",
+                head: true
+            }
+        )
+        .eq(
+            "user_id",
+            user.id
+        );
 
-    const pedidos =
-        JSON.parse(
-            localStorage.getItem("pedidos")
-        ) || [];
+
+if (ordersError) {
+
+    console.error(
+        "Erro ao contar pedidos:",
+        ordersError
+    );
+
 
     ordersCount.textContent =
-        pedidos.length;
+        "0";
+
+} else {
+
+    ordersCount.textContent =
+        quantidadePedidos || 0;
 
 }
 
-
-contarPedidos();
+}
 
 
 // ================================
@@ -112,9 +220,20 @@ contarPedidos();
 
 accountForm.addEventListener(
     "submit",
-    function (event) {
+    async function (event) {
 
         event.preventDefault();
+
+
+        if (!usuarioAtual) {
+
+            alert(
+                "Usuário não encontrado."
+            );
+
+            return;
+
+        }
 
 
         const novoNome =
@@ -131,8 +250,8 @@ accountForm.addEventListener(
 
 
         if (
-            novoNome === "" ||
-            novoEmail === ""
+            !novoNome ||
+            !novoEmail
         ) {
 
             alert(
@@ -144,55 +263,127 @@ accountForm.addEventListener(
         }
 
 
-        // Atualiza o usuário logado
+        // ================================
+        // ATUALIZAR NOME NO PROFILE
+        // ================================
 
-        usuarioLogado.nome =
-            novoNome;
+        const {
+            error: profileError
+        } =
+            await supabaseClient
+                .from("profiles")
+                .update({
 
-        usuarioLogado.email =
-            novoEmail;
+                    nome:
+                        novoNome,
+
+                    email:
+                        novoEmail
+
+                })
+                .eq(
+                    "id",
+                    usuarioAtual.id
+                );
 
 
-        // Salva usuário logado
+        if (profileError) {
 
-        localStorage.setItem(
-            "usuarioLogado",
-            JSON.stringify(
-                usuarioLogado
-            )
-        );
-
-
-        // Atualiza usuário cadastrado
-
-        const usuario =
-            JSON.parse(
-                localStorage.getItem(
-                    "usuario"
-                )
+            console.error(
+                "Erro ao atualizar perfil:",
+                profileError
             );
 
 
-        if (usuario) {
-
-            usuario.nome =
-                novoNome;
-
-            usuario.email =
-                novoEmail;
-
-
-            localStorage.setItem(
-                "usuario",
-                JSON.stringify(
-                    usuario
-                )
+            alert(
+                "Não foi possível atualizar os dados."
             );
+
+            return;
 
         }
 
 
-        carregarUsuario();
+        // ================================
+        // ATUALIZAR AUTH
+        // ================================
+
+        const dadosAuth = {
+
+            data: {
+                nome: novoNome
+            }
+
+        };
+
+
+        // Só tenta mudar o e-mail
+        // se realmente foi alterado.
+
+        if (
+            novoEmail !==
+            usuarioAtual.email
+        ) {
+
+            dadosAuth.email =
+                novoEmail;
+
+        }
+
+
+        const {
+            data,
+            error: authError
+        } =
+            await supabaseClient
+                .auth
+                .updateUser(
+                    dadosAuth
+                );
+
+
+        if (authError) {
+
+            console.error(
+                "Erro ao atualizar usuário:",
+                authError
+            );
+
+
+            alert(
+                "O perfil foi atualizado, mas houve um problema ao atualizar os dados de autenticação: " +
+                authError.message
+            );
+
+            return;
+
+        }
+
+
+        usuarioAtual =
+            data.user;
+
+
+        perfilAtual = {
+
+            id:
+                usuarioAtual.id,
+
+            nome:
+                novoNome,
+
+            email:
+                novoEmail
+
+        };
+
+
+        profileName.textContent =
+            novoNome;
+
+
+        profileEmail.textContent =
+            novoEmail;
 
 
         alert(
@@ -209,32 +400,46 @@ accountForm.addEventListener(
 
 passwordForm.addEventListener(
     "submit",
-    function (event) {
+    async function (event) {
 
         event.preventDefault();
+
+
+        if (!usuarioAtual) {
+
+            alert(
+                "Usuário não encontrado."
+            );
+
+            return;
+
+        }
 
 
         const senhaAtual =
             currentPassword.value;
 
+
         const novaSenha =
             newPassword.value;
 
-        const confirmarSenha =
+
+        const confirmar =
             confirmPassword.value;
 
 
         // ================================
-        // VALIDAR SENHA ATUAL
+        // CAMPOS VAZIOS
         // ================================
 
         if (
-            senhaAtual !==
-            usuarioLogado.senha
+            !senhaAtual ||
+            !novaSenha ||
+            !confirmar
         ) {
 
             alert(
-                "A senha atual está incorreta."
+                "Preencha todos os campos de senha."
             );
 
             return;
@@ -243,15 +448,15 @@ passwordForm.addEventListener(
 
 
         // ================================
-        // VALIDAR NOVA SENHA
+        // NOVA SENHA
         // ================================
 
         if (
-            novaSenha.length < 4
+            novaSenha.length < 6
         ) {
 
             alert(
-                "A nova senha deve ter pelo menos 4 caracteres."
+                "A nova senha deve ter pelo menos 6 caracteres."
             );
 
             return;
@@ -260,12 +465,12 @@ passwordForm.addEventListener(
 
 
         // ================================
-        // CONFIRMAR SENHA
+        // CONFIRMAR NOVA SENHA
         // ================================
 
         if (
             novaSenha !==
-            confirmarSenha
+            confirmar
         ) {
 
             alert(
@@ -278,43 +483,78 @@ passwordForm.addEventListener(
 
 
         // ================================
-        // ATUALIZAR SENHA
+        // VERIFICAR SENHA ATUAL
+        // ================================
+        //
+        // Como a senha não fica mais
+        // salva no navegador, verificamos
+        // diretamente com o Supabase.
         // ================================
 
-        usuarioLogado.senha =
-            novaSenha;
+        const {
+            error: loginError
+        } =
+            await supabaseClient
+                .auth
+                .signInWithPassword({
+
+                    email:
+                        usuarioAtual.email,
+
+                    password:
+                        senhaAtual
+
+                });
 
 
-        localStorage.setItem(
-            "usuarioLogado",
-            JSON.stringify(
-                usuarioLogado
-            )
-        );
+        if (loginError) {
 
-
-        // Atualiza também usuário cadastrado
-
-        const usuario =
-            JSON.parse(
-                localStorage.getItem(
-                    "usuario"
-                )
+            console.error(
+                "Senha atual incorreta:",
+                loginError
             );
 
 
-        if (usuario) {
-
-            usuario.senha =
-                novaSenha;
-
-
-            localStorage.setItem(
-                "usuario",
-                JSON.stringify(
-                    usuario
-                )
+            alert(
+                "A senha atual está incorreta."
             );
+
+            return;
+
+        }
+
+
+        // ================================
+        // ATUALIZAR SENHA NO SUPABASE
+        // ================================
+
+        const {
+            error: passwordError
+        } =
+            await supabaseClient
+                .auth
+                .updateUser({
+
+                    password:
+                        novaSenha
+
+                });
+
+
+        if (passwordError) {
+
+            console.error(
+                "Erro ao alterar senha:",
+                passwordError
+            );
+
+
+            alert(
+                "Não foi possível alterar a senha: " +
+                passwordError.message
+            );
+
+            return;
 
         }
 
@@ -336,7 +576,7 @@ passwordForm.addEventListener(
 
 logoutAccount.addEventListener(
     "click",
-    function () {
+    async function () {
 
         const confirmarSaida =
             confirm(
@@ -351,9 +591,29 @@ logoutAccount.addEventListener(
         }
 
 
-        localStorage.removeItem(
-            "usuarioLogado"
-        );
+        const {
+            error
+        } =
+            await supabaseClient
+                .auth
+                .signOut();
+
+
+        if (error) {
+
+            console.error(
+                "Erro ao sair:",
+                error
+            );
+
+
+            alert(
+                "Não foi possível sair da conta."
+            );
+
+            return;
+
+        }
 
 
         alert(
@@ -366,3 +626,10 @@ logoutAccount.addEventListener(
 
     }
 );
+
+
+// ================================
+// INICIAR PÁGINA
+// ================================
+
+carregarUsuario();

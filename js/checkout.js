@@ -2,24 +2,42 @@
 // ELEMENTOS DO CHECKOUT
 // ================================
 
-const checkoutItems = document.querySelector("#checkoutItems");
-const checkoutSubtotal = document.querySelector("#checkoutSubtotal");
-const checkoutTotal = document.querySelector("#checkoutTotal");
-const finishOrder = document.querySelector("#finishOrder");
+const checkoutItems =
+    document.querySelector("#checkoutItems");
 
-const nome = document.querySelector("#nome");
-const emailCheckout = document.querySelector("#emailCheckout");
+const checkoutSubtotal =
+    document.querySelector("#checkoutSubtotal");
+
+const checkoutTotal =
+    document.querySelector("#checkoutTotal");
+
+const finishOrder =
+    document.querySelector("#finishOrder");
+
+const nome =
+    document.querySelector("#nome");
+
+const emailCheckout =
+    document.querySelector("#emailCheckout");
 
 
 // ================================
-// RECUPERAR DADOS
+// CARRINHO
 // ================================
 
 const carrinho =
-    JSON.parse(localStorage.getItem("carrinho")) || [];
+    JSON.parse(
+        localStorage.getItem("carrinho")
+    ) || [];
 
-const usuarioLogado =
-    JSON.parse(localStorage.getItem("usuarioLogado"));
+
+// ================================
+// USUÁRIO
+// ================================
+
+let usuarioAtual = null;
+
+let perfilAtual = null;
 
 
 // ================================
@@ -28,114 +46,240 @@ const usuarioLogado =
 
 function formatarPreco(valor) {
 
-    return valor.toLocaleString("pt-BR", {
-
-        style: "currency",
-        currency: "BRL"
-
-    });
-
-}
-
-
-// ================================
-// PREENCHER DADOS DO USUÁRIO
-// ================================
-
-if (usuarioLogado) {
-
-    nome.value = usuarioLogado.nome || "";
-
-    emailCheckout.value = usuarioLogado.email || "";
+    return valor.toLocaleString(
+        "pt-BR",
+        {
+            style: "currency",
+            currency: "BRL"
+        }
+    );
 
 }
 
 
 // ================================
-// MOSTRAR PRODUTOS DO CARRINHO
+// CARREGAR USUÁRIO
+// ================================
+
+async function carregarUsuarioCheckout() {
+
+    const {
+        data: {
+            user
+        },
+        error
+    } =
+        await supabaseClient
+            .auth
+            .getUser();
+
+
+    if (error) {
+
+        console.error(
+            "Erro ao buscar usuário:",
+            error
+        );
+
+    }
+
+
+    if (!user) {
+
+        alert(
+            "Entre na sua conta para finalizar a compra."
+        );
+
+
+        window.location.href =
+            "index.html";
+
+
+        return false;
+
+    }
+
+
+    usuarioAtual =
+        user;
+
+
+    // ================================
+    // BUSCAR PERFIL
+    // ================================
+
+    const {
+        data: perfil,
+        error: profileError
+    } =
+        await supabaseClient
+            .from("profiles")
+            .select(
+                "nome, email"
+            )
+            .eq(
+                "id",
+                user.id
+            )
+            .maybeSingle();
+
+
+    if (profileError) {
+
+        console.error(
+            "Erro ao buscar perfil:",
+            profileError
+        );
+
+    }
+
+
+    perfilAtual =
+        perfil;
+
+
+    // ================================
+    // PREENCHER DADOS
+    // ================================
+
+    nome.value =
+
+        perfil?.nome ||
+
+        user
+            .user_metadata
+            ?.nome ||
+
+        "";
+
+
+    emailCheckout.value =
+
+        perfil?.email ||
+
+        user.email ||
+
+        "";
+
+
+    return true;
+
+}
+
+
+// ================================
+// MOSTRAR CARRINHO
 // ================================
 
 function carregarCheckout() {
 
-    checkoutItems.innerHTML = "";
+    checkoutItems.innerHTML =
+        "";
 
-    let subtotal = 0;
+
+    let subtotal =
+        0;
 
 
-    // Carrinho vazio
-
-    if (carrinho.length === 0) {
+    if (
+        carrinho.length === 0
+    ) {
 
         checkoutItems.innerHTML = `
+
             <p class="checkout-empty">
+
                 Seu carrinho está vazio.
+
             </p>
+
         `;
 
-        checkoutSubtotal.textContent = "R$ 0,00";
 
-        checkoutTotal.textContent = "R$ 0,00";
+        checkoutSubtotal.textContent =
+            "R$ 0,00";
+
+
+        checkoutTotal.textContent =
+            "R$ 0,00";
+
 
         return;
 
     }
 
 
-    // Percorre os produtos
+    carrinho.forEach(
+        function (produto) {
 
-    carrinho.forEach(function (produto) {
+            subtotal +=
 
-        subtotal +=
-            produto.preco * produto.quantidade;
+                produto.preco *
 
-
-        const item = document.createElement("div");
-
-        item.classList.add("checkout-product");
+                produto.quantidade;
 
 
-        item.innerHTML = `
-
-            <img
-                src="${produto.imagem}"
-                alt="${produto.nome}"
-            >
-
-            <div class="checkout-product-info">
-
-                <h3>
-                    ${produto.nome}
-                </h3>
-
-                <p>
-                    Quantidade:
-                    ${produto.quantidade}
-                </p>
-
-                <strong>
-                    ${formatarPreco(
-                        produto.preco *
-                        produto.quantidade
-                    )}
-                </strong>
-
-            </div>
-
-        `;
+            const item =
+                document.createElement(
+                    "div"
+                );
 
 
-        checkoutItems.appendChild(item);
+            item.classList.add(
+                "checkout-product"
+            );
 
-    });
+
+            item.innerHTML = `
+
+                <img
+                    src="${produto.imagem}"
+                    alt="${produto.nome}"
+                >
+
+                <div class="checkout-product-info">
+
+                    <h3>
+                        ${produto.nome}
+                    </h3>
+
+                    <p>
+                        Quantidade:
+                        ${produto.quantidade}
+                    </p>
+
+                    <strong>
+
+                        ${formatarPreco(
+                            produto.preco *
+                            produto.quantidade
+                        )}
+
+                    </strong>
+
+                </div>
+
+            `;
 
 
-    // Atualiza valores
+            checkoutItems.appendChild(
+                item
+            );
+
+        }
+    );
+
 
     checkoutSubtotal.textContent =
-        formatarPreco(subtotal);
+        formatarPreco(
+            subtotal
+        );
+
 
     checkoutTotal.textContent =
-        formatarPreco(subtotal);
+        formatarPreco(
+            subtotal
+        );
 
 }
 
@@ -144,239 +288,384 @@ function carregarCheckout() {
 // FINALIZAR PEDIDO
 // ================================
 
-finishOrder.addEventListener("click", function () {
+finishOrder.addEventListener(
+    "click",
+    async function () {
 
 
-    // Verifica carrinho
+        // ================================
+        // VERIFICAR USUÁRIO
+        // ================================
 
-    if (carrinho.length === 0) {
-
-        alert("Seu carrinho está vazio.");
-
-        return;
-
-    }
-
-
- // ================================
-// PEGAR DADOS DO FORMULÁRIO
-// ================================
-
-const nomeCompleto = document
-.querySelector("#nome")
-.value
-.trim();
+        const {
+            data: {
+                user
+            },
+            error: userError
+        } =
+            await supabaseClient
+                .auth
+                .getUser();
 
 
-    const email =
-        document
-            .querySelector("#emailCheckout")
-            .value
-            .trim();
+        if (
+            userError ||
+            !user
+        ) {
+
+            alert(
+                "Entre na sua conta para finalizar a compra."
+            );
 
 
-    const telefone =
-        document
-            .querySelector("#telefone")
-            .value
-            .trim();
+            window.location.href =
+                "index.html";
 
 
-    const cep =
-        document
-            .querySelector("#cep")
-            .value
-            .trim();
+            return;
+
+        }
 
 
-    const cidade =
-        document
-            .querySelector("#cidade")
-            .value
-            .trim();
+        // ================================
+        // CARRINHO
+        // ================================
+
+        if (
+            carrinho.length === 0
+        ) {
+
+            alert(
+                "Seu carrinho está vazio."
+            );
+
+            return;
+
+        }
 
 
-    const endereco =
-        document
-            .querySelector("#endereco")
-            .value
-            .trim();
+        // ================================
+        // DADOS DO FORMULÁRIO
+        // ================================
+
+        const nomeCompleto =
+            document
+                .querySelector("#nome")
+                .value
+                .trim();
 
 
-    const numero =
-        document
-            .querySelector("#numero")
-            .value
-            .trim();
+        const email =
+            document
+                .querySelector(
+                    "#emailCheckout"
+                )
+                .value
+                .trim()
+                .toLowerCase();
 
 
-    const complemento =
-        document
-            .querySelector("#complemento")
-            .value
-            .trim();
+        const telefone =
+            document
+                .querySelector(
+                    "#telefone"
+                )
+                .value
+                .trim();
 
 
-    // ================================
-    // VALIDAR CAMPOS
-    // ================================
+        const cep =
+            document
+                .querySelector("#cep")
+                .value
+                .trim();
 
-    if (
-        !nomeCompleto ||
-        !email ||
-        !telefone ||
-        !cep ||
-        !cidade ||
-        !endereco ||
-        !numero
-    ) {
+
+        const cidade =
+            document
+                .querySelector(
+                    "#cidade"
+                )
+                .value
+                .trim();
+
+
+        const endereco =
+            document
+                .querySelector(
+                    "#endereco"
+                )
+                .value
+                .trim();
+
+
+        const numero =
+            document
+                .querySelector(
+                    "#numero"
+                )
+                .value
+                .trim();
+
+
+        const complemento =
+            document
+                .querySelector(
+                    "#complemento"
+                )
+                .value
+                .trim();
+
+
+        // ================================
+        // VALIDAR CAMPOS
+        // ================================
+
+        if (
+            !nomeCompleto ||
+            !email ||
+            !telefone ||
+            !cep ||
+            !cidade ||
+            !endereco ||
+            !numero
+        ) {
+
+            alert(
+                "Preencha todos os campos obrigatórios."
+            );
+
+            return;
+
+        }
+
+
+        // ================================
+        // PAGAMENTO
+        // ================================
+
+        const pagamento =
+            document.querySelector(
+                'input[name="payment"]:checked'
+            );
+
+
+        if (!pagamento) {
+
+            alert(
+                "Selecione uma forma de pagamento."
+            );
+
+            return;
+
+        }
+
+
+        // ================================
+        // CALCULAR TOTAL
+        // ================================
+
+        let totalPedido =
+            0;
+
+
+        carrinho.forEach(
+            function (produto) {
+
+                totalPedido +=
+
+                    produto.preco *
+
+                    produto.quantidade;
+
+            }
+        );
+
+
+        // ================================
+        // CRIAR PEDIDO
+        // ================================
+
+        const {
+            data: pedido,
+            error: orderError
+        } =
+            await supabaseClient
+                .from("orders")
+                .insert({
+
+                    user_id:
+                        user.id,
+
+                    nome:
+                        nomeCompleto,
+
+                    email:
+                        email,
+
+                    telefone:
+                        telefone,
+
+                    cep:
+                        cep,
+
+                    cidade:
+                        cidade,
+
+                    endereco:
+                        endereco,
+
+                    numero:
+                        numero,
+
+                    complemento:
+                        complemento || null,
+
+                    pagamento:
+                        pagamento.value,
+
+                    total:
+                        totalPedido,
+
+                    status:
+                        "realizado"
+
+                })
+                .select()
+                .single();
+
+
+        if (orderError) {
+
+            console.error(
+                "Erro ao criar pedido:",
+                orderError
+            );
+
+
+            alert(
+                "Não foi possível criar o pedido: " +
+                orderError.message
+            );
+
+
+            return;
+
+        }
+
+
+        // ================================
+        // PREPARAR PRODUTOS
+        // ================================
+
+        const produtosPedido =
+            carrinho.map(
+                function (produto) {
+
+                    return {
+
+                        order_id:
+                            pedido.id,
+
+                        product_id:
+                            produto.id,
+
+                        nome:
+                            produto.nome,
+
+                        preco:
+                            produto.preco,
+
+                        quantidade:
+                            produto.quantidade,
+
+                        imagem:
+                            produto.imagem || null
+
+                    };
+
+                }
+            );
+
+
+        // ================================
+        // SALVAR PRODUTOS
+        // ================================
+
+        const {
+            error: itemsError
+        } =
+            await supabaseClient
+                .from("order_items")
+                .insert(
+                    produtosPedido
+                );
+
+
+        if (itemsError) {
+
+            console.error(
+                "Erro ao salvar produtos:",
+                itemsError
+            );
+
+
+            alert(
+                "O pedido foi criado, mas ocorreu um erro ao salvar os produtos: " +
+                itemsError.message
+            );
+
+
+            return;
+
+        }
+
+
+        // ================================
+        // LIMPAR CARRINHO
+        // ================================
+
+        localStorage.removeItem(
+            "carrinho"
+        );
+
+
+        // ================================
+        // SUCESSO
+        // ================================
 
         alert(
-            "Preencha todos os campos obrigatórios."
+            `Pedido #${pedido.id} realizado com sucesso!`
         );
+
+
+        window.location.href =
+            "compras.html";
+
+    }
+);
+
+
+// ================================
+// INICIAR
+// ================================
+
+async function iniciarCheckout() {
+
+    const usuarioCarregado =
+        await carregarUsuarioCheckout();
+
+
+    if (!usuarioCarregado) {
 
         return;
 
     }
 
 
-    // ================================
-    // PEGAR FORMA DE PAGAMENTO
-    // ================================
+    carregarCheckout();
 
-    const pagamento =
-        document.querySelector(
-            'input[name="payment"]:checked'
-        );
+}
 
 
-    if (!pagamento) {
-
-        alert(
-            "Selecione uma forma de pagamento."
-        );
-
-        return;
-
-    }
-
-
-    // ================================
-    // CALCULAR TOTAL
-    // ================================
-
-    let totalPedido = 0;
-
-
-    carrinho.forEach(function (produto) {
-
-        totalPedido +=
-            produto.preco *
-            produto.quantidade;
-
-    });
-
-
-    // ================================
-    // CRIAR PEDIDO
-    // ================================
-
-    const pedido = {
-
-        id: Date.now(),
-
-        cliente: {
-
-            nome: nomeCompleto,
-
-            email: email,
-
-            telefone: telefone
-
-        },
-
-        endereco: {
-
-            cep: cep,
-
-            cidade: cidade,
-
-            endereco: endereco,
-
-            numero: numero,
-
-            complemento: complemento
-
-        },
-
-        pagamento: pagamento.value,
-
-        produtos: carrinho,
-
-        total: totalPedido,
-
-        data: new Date().toLocaleString(
-            "pt-BR"
-        )
-
-    };
-
-
-    // ================================
-    // RECUPERAR PEDIDOS ANTIGOS
-    // ================================
-
-    const pedidos =
-        JSON.parse(
-            localStorage.getItem("pedidos")
-        ) || [];
-
-
-    // ================================
-    // ADICIONAR NOVO PEDIDO
-    // ================================
-
-    pedidos.push(pedido);
-
-
-    // ================================
-    // SALVAR PEDIDOS
-    // ================================
-
-    localStorage.setItem(
-        "pedidos",
-        JSON.stringify(pedidos)
-    );
-
-
-    // ================================
-    // LIMPAR CARRINHO
-    // ================================
-
-    localStorage.removeItem("carrinho");
-
-
-    // ================================
-    // MENSAGEM DE SUCESSO
-    // ================================
-
-    alert(
-        "Pedido realizado com sucesso!"
-    );
-
-
-    // ================================
-    // VOLTAR PARA A LOJA
-    // ================================
-
-    window.location.href =
-        "index.html";
-
-});
-
-
-// ================================
-// CARREGAR CHECKOUT
-// ================================
-
-carregarCheckout();
+iniciarCheckout();

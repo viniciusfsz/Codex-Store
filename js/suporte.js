@@ -39,26 +39,110 @@ const supportButtons =
 
 
 // ================================
-// RECUPERAR USUÁRIO LOGADO
+// USUÁRIO
 // ================================
 
-const usuarioLogado =
-    JSON.parse(
-        localStorage.getItem("usuarioLogado")
-    );
+let usuarioAtual = null;
+
+let perfilAtual = null;
 
 
 // ================================
-// PREENCHER NOME E EMAIL
+// CARREGAR USUÁRIO
 // ================================
 
-if (usuarioLogado) {
+async function carregarUsuario() {
+
+    const {
+        data: {
+            user
+        },
+        error
+    } =
+        await supabaseClient
+            .auth
+            .getUser();
+
+
+    if (error) {
+
+        console.error(
+            "Erro ao buscar usuário:",
+            error
+        );
+
+    }
+
+
+    if (!user) {
+
+        usuarioAtual = null;
+
+        return;
+
+    }
+
+
+    usuarioAtual =
+        user;
+
+
+    // ================================
+    // BUSCAR PERFIL
+    // ================================
+
+    const {
+        data: perfil,
+        error: profileError
+    } =
+        await supabaseClient
+            .from("profiles")
+            .select(
+                "nome, email"
+            )
+            .eq(
+                "id",
+                user.id
+            )
+            .maybeSingle();
+
+
+    if (profileError) {
+
+        console.error(
+            "Erro ao carregar perfil:",
+            profileError
+        );
+
+    }
+
+
+    perfilAtual =
+        perfil;
+
+
+    // ================================
+    // PREENCHER FORMULÁRIO
+    // ================================
 
     ticketName.value =
-        usuarioLogado.nome || "";
+
+        perfil?.nome ||
+
+        user
+            .user_metadata
+            ?.nome ||
+
+        "";
+
 
     ticketEmail.value =
-        usuarioLogado.email || "";
+
+        perfil?.email ||
+
+        user.email ||
+
+        "";
 
 }
 
@@ -67,47 +151,49 @@ if (usuarioLogado) {
 // FAQ
 // ================================
 
-faqItems.forEach(function (item) {
+faqItems.forEach(
+    function (item) {
 
-    const pergunta =
-        item.querySelector(".faq-question");
-
-
-    pergunta.addEventListener(
-        "click",
-        function () {
-
-            const estaAberto =
-                item.classList.contains("active");
+        const pergunta =
+            item.querySelector(
+                ".faq-question"
+            );
 
 
-            // Fecha todos
+        pergunta.addEventListener(
+            "click",
+            function () {
 
-            faqItems.forEach(
-                function (faq) {
+                const estaAberto =
+                    item.classList.contains(
+                        "active"
+                    );
 
-                    faq.classList.remove(
+
+                faqItems.forEach(
+                    function (faq) {
+
+                        faq.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+
+                if (!estaAberto) {
+
+                    item.classList.add(
                         "active"
                     );
 
                 }
-            );
-
-
-            // Abre o selecionado
-
-            if (!estaAberto) {
-
-                item.classList.add(
-                    "active"
-                );
 
             }
+        );
 
-        }
-    );
-
-});
+    }
+);
 
 
 // ================================
@@ -119,7 +205,9 @@ ticketMessage.addEventListener(
     function () {
 
         messageCount.textContent =
-            ticketMessage.value.length;
+            ticketMessage
+                .value
+                .length;
 
     }
 );
@@ -129,57 +217,76 @@ ticketMessage.addEventListener(
 // ATALHOS DE SUPORTE
 // ================================
 
-supportButtons.forEach(function (botao) {
+supportButtons.forEach(
+    function (botao) {
 
-    botao.addEventListener(
-        "click",
-        function () {
+        botao.addEventListener(
+            "click",
+            function () {
 
-            const assunto =
-                botao.dataset.topic;
-
-
-            ticketCategory.value =
-                assunto;
+                const assunto =
+                    botao
+                        .dataset
+                        .topic;
 
 
-            document
-                .querySelector("#abrirTicket")
-                .scrollIntoView({
-                    behavior: "smooth"
-                });
+                ticketCategory.value =
+                    assunto;
 
-        }
-    );
 
-});
+                document
+                    .querySelector(
+                        "#abrirTicket"
+                    )
+                    .scrollIntoView({
+
+                        behavior:
+                            "smooth"
+
+                    });
+
+            }
+        );
+
+    }
+);
 
 
 // ================================
 // FORMATAR CATEGORIA
 // ================================
 
-function formatarCategoria(categoria) {
+function formatarCategoria(
+    categoria
+) {
 
     const categorias = {
 
-        pedido: "Pedido",
+        pedido:
+            "Pedido",
 
-        pagamento: "Pagamento",
+        pagamento:
+            "Pagamento",
 
-        entrega: "Entrega",
+        entrega:
+            "Entrega",
 
-        produto: "Produto",
+        produto:
+            "Produto",
 
-        conta: "Minha Conta",
+        conta:
+            "Minha Conta",
 
-        outro: "Outro"
+        outro:
+            "Outro"
 
     };
 
 
-    return categorias[categoria] ||
-        categoria;
+    return (
+        categorias[categoria] ||
+        categoria
+    );
 
 }
 
@@ -193,7 +300,8 @@ function gerarNumeroTicket() {
     const numero =
         Math.floor(
             100000 +
-            Math.random() * 900000
+            Math.random() *
+            900000
         );
 
 
@@ -203,46 +311,61 @@ function gerarNumeroTicket() {
 
 
 // ================================
-// RECUPERAR TICKETS
+// CARREGAR TICKETS
 // ================================
 
-function recuperarTickets() {
+async function carregarTickets() {
 
-    return JSON.parse(
-        localStorage.getItem("tickets")
-    ) || [];
-
-}
+    ticketsList.innerHTML =
+        "";
 
 
-// ================================
-// SALVAR TICKETS
-// ================================
+    if (!usuarioAtual) {
 
-function salvarTickets(tickets) {
+        emptyTickets.style.display =
+            "block";
 
-    localStorage.setItem(
-        "tickets",
-        JSON.stringify(tickets)
-    );
+        return;
 
-}
+    }
 
 
-// ================================
-// MOSTRAR TICKETS
-// ================================
+    const {
+        data: tickets,
+        error
+    } =
+        await supabaseClient
+            .from("tickets")
+            .select("*")
+            .eq(
+                "user_id",
+                usuarioAtual.id
+            )
+            .order(
+                "created_at",
+                {
+                    ascending:
+                        false
+                }
+            );
 
-function carregarTickets() {
 
-    const tickets =
-        recuperarTickets();
+    if (error) {
+
+        console.error(
+            "Erro ao carregar tickets:",
+            error
+        );
+
+        return;
+
+    }
 
 
-    ticketsList.innerHTML = "";
-
-
-    if (tickets.length === 0) {
+    if (
+        !tickets ||
+        tickets.length === 0
+    ) {
 
         emptyTickets.style.display =
             "block";
@@ -256,16 +379,13 @@ function carregarTickets() {
         "none";
 
 
-    // Ticket mais recente primeiro
-
-    tickets
-        .slice()
-        .reverse()
-        .forEach(function (ticket) {
-
+    tickets.forEach(
+        function (ticket) {
 
             const card =
-                document.createElement("article");
+                document.createElement(
+                    "article"
+                );
 
 
             card.classList.add(
@@ -273,35 +393,64 @@ function carregarTickets() {
             );
 
 
+            const dataFormatada =
+                new Date(
+                    ticket.created_at
+                )
+                    .toLocaleString(
+                        "pt-BR"
+                    );
+
+
             card.innerHTML = `
 
-                <div class="ticket-card-header">
+                <div
+                    class="ticket-card-header"
+                >
 
                     <div>
 
-                        <span class="ticket-number">
+                        <span
+                            class="ticket-number"
+                        >
+
                             Ticket #${ticket.numero}
+
                         </span>
 
+
                         <h3>
+
                             ${ticket.assunto}
+
                         </h3>
 
-                        <p class="ticket-date">
-                            ${ticket.data}
+
+                        <p
+                            class="ticket-date"
+                        >
+
+                            ${dataFormatada}
+
                         </p>
 
                     </div>
 
 
-                    <span class="ticket-status">
-                        Aberto
+                    <span
+                        class="ticket-status"
+                    >
+
+                        ${ticket.status}
+
                     </span>
 
                 </div>
 
 
-                <span class="ticket-category">
+                <span
+                    class="ticket-category"
+                >
 
                     ${formatarCategoria(
                         ticket.categoria
@@ -310,7 +459,9 @@ function carregarTickets() {
                 </span>
 
 
-                <p class="ticket-message">
+                <p
+                    class="ticket-message"
+                >
 
                     ${ticket.mensagem}
 
@@ -323,7 +474,8 @@ function carregarTickets() {
                 card
             );
 
-        });
+        }
+    );
 
 }
 
@@ -334,9 +486,29 @@ function carregarTickets() {
 
 ticketForm.addEventListener(
     "submit",
-    function (event) {
+    async function (event) {
 
         event.preventDefault();
+
+
+        // ================================
+        // EXIGIR LOGIN
+        // ================================
+
+        if (!usuarioAtual) {
+
+            alert(
+                "Entre na sua conta para abrir um ticket."
+            );
+
+
+            window.location.href =
+                "index.html";
+
+
+            return;
+
+        }
 
 
         // ================================
@@ -344,7 +516,10 @@ ticketForm.addEventListener(
         // ================================
 
         const nome =
-            ticketName.value.trim();
+            ticketName
+                .value
+                .trim();
+
 
         const email =
             ticketEmail
@@ -352,18 +527,26 @@ ticketForm.addEventListener(
                 .trim()
                 .toLowerCase();
 
+
         const categoria =
-            ticketCategory.value;
+            ticketCategory
+                .value;
+
 
         const assunto =
-            ticketSubject.value.trim();
+            ticketSubject
+                .value
+                .trim();
+
 
         const mensagem =
-            ticketMessage.value.trim();
+            ticketMessage
+                .value
+                .trim();
 
 
         // ================================
-        // VALIDAÇÃO
+        // VALIDAR
         // ================================
 
         if (
@@ -383,7 +566,9 @@ ticketForm.addEventListener(
         }
 
 
-        if (mensagem.length < 10) {
+        if (
+            mensagem.length < 10
+        ) {
 
             alert(
                 "Descreva melhor o problema."
@@ -395,61 +580,63 @@ ticketForm.addEventListener(
 
 
         // ================================
-        // CRIAR TICKET
+        // CRIAR TICKET NO SUPABASE
         // ================================
 
-        const novoTicket = {
-
-            id: Date.now(),
-
-            numero:
-                gerarNumeroTicket(),
-
-            nome: nome,
-
-            email: email,
-
-            categoria: categoria,
-
-            assunto: assunto,
-
-            mensagem: mensagem,
-
-            status: "aberto",
-
-            data:
-                new Date()
-                    .toLocaleString(
-                        "pt-BR"
-                    )
-
-        };
+        const numero =
+            gerarNumeroTicket();
 
 
-        // ================================
-        // RECUPERAR TICKETS
-        // ================================
+        const {
+            error
+        } =
+            await supabaseClient
+                .from("tickets")
+                .insert({
 
-        const tickets =
-            recuperarTickets();
+                    user_id:
+                        usuarioAtual.id,
+
+                    numero:
+                        numero,
+
+                    nome:
+                        nome,
+
+                    email:
+                        email,
+
+                    categoria:
+                        categoria,
+
+                    assunto:
+                        assunto,
+
+                    mensagem:
+                        mensagem,
+
+                    status:
+                        "aberto"
+
+                });
 
 
-        // ================================
-        // ADICIONAR TICKET
-        // ================================
+        if (error) {
 
-        tickets.push(
-            novoTicket
-        );
+            console.error(
+                "Erro ao criar ticket:",
+                error
+            );
 
 
-        // ================================
-        // SALVAR
-        // ================================
+            alert(
+                "Não foi possível abrir o ticket: " +
+                error.message
+            );
 
-        salvarTickets(
-            tickets
-        );
+            return;
+
+        }
 
 
         // ================================
@@ -459,20 +646,29 @@ ticketForm.addEventListener(
         ticketForm.reset();
 
 
-        // Recoloca dados do usuário
+        // ================================
+        // RECOLOCAR NOME E EMAIL
+        // ================================
 
-        if (usuarioLogado) {
+        ticketName.value =
 
-            ticketName.value =
-                usuarioLogado.nome || "";
+            perfilAtual?.nome ||
 
-            ticketEmail.value =
-                usuarioLogado.email || "";
+            usuarioAtual
+                .user_metadata
+                ?.nome ||
 
-        }
+            "";
 
 
-        // Zera contador
+        ticketEmail.value =
+
+            perfilAtual?.email ||
+
+            usuarioAtual.email ||
+
+            "";
+
 
         messageCount.textContent =
             "0";
@@ -482,26 +678,23 @@ ticketForm.addEventListener(
         // ATUALIZAR LISTA
         // ================================
 
-        carregarTickets();
+        await carregarTickets();
 
-
-        // ================================
-        // SUCESSO
-        // ================================
 
         alert(
-            `Ticket #${novoTicket.numero} aberto com sucesso!`
+            `Ticket #${numero} aberto com sucesso!`
         );
 
 
-        // ================================
-        // ROLAR PARA MEUS TICKETS
-        // ================================
-
         document
-            .querySelector(".my-tickets")
+            .querySelector(
+                ".my-tickets"
+            )
             .scrollIntoView({
-                behavior: "smooth"
+
+                behavior:
+                    "smooth"
+
             });
 
     }
@@ -509,7 +702,16 @@ ticketForm.addEventListener(
 
 
 // ================================
-// CARREGAR AO ABRIR A PÁGINA
+// INICIAR
 // ================================
 
-carregarTickets();
+async function iniciarSuporte() {
+
+    await carregarUsuario();
+
+    await carregarTickets();
+
+}
+
+
+iniciarSuporte();

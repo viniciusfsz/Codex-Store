@@ -2,72 +2,294 @@
 // ELEMENTOS DE LOGIN E CADASTRO
 // ================================
 
-const loginBtn = document.querySelector("#loginBtn");
-const userName = document.querySelector("#userName");
+const loginBtn =
+    document.querySelector("#loginBtn");
 
-const modal = document.querySelector("#modal");
-const modalCadastro = document.querySelector("#modalCadastro");
+const userName =
+    document.querySelector("#userName");
 
-const fecharModal = document.querySelector("#modal .close-modal");
-const fecharCadastro = document.querySelector("#fecharCadastro");
+const modal =
+    document.querySelector("#modal");
 
-const abrirCadastro = document.querySelector("#abrirCadastro");
-const voltarLogin = document.querySelector("#voltarLogin");
+const modalCadastro =
+    document.querySelector("#modalCadastro");
 
-const formLogin = document.querySelector("#formLogin");
-const formCadastro = document.querySelector("#formCadastro");
+const fecharModal =
+    document.querySelector(
+        "#modal .close-modal"
+    );
+
+const fecharCadastro =
+    document.querySelector(
+        "#fecharCadastro"
+    );
+
+const abrirCadastro =
+    document.querySelector(
+        "#abrirCadastro"
+    );
+
+const voltarLogin =
+    document.querySelector(
+        "#voltarLogin"
+    );
+
+const formLogin =
+    document.querySelector(
+        "#formLogin"
+    );
+
+const formCadastro =
+    document.querySelector(
+        "#formCadastro"
+    );
 
 
 // ================================
-// ELEMENTOS DA SIDEBAR DO USUÁRIO
+// SIDEBAR DO USUÁRIO
 // ================================
 
 const userSidebar =
-    document.querySelector("#userSidebar");
+    document.querySelector(
+        "#userSidebar"
+    );
 
 const userOverlay =
-    document.querySelector("#userOverlay");
+    document.querySelector(
+        "#userOverlay"
+    );
 
 const closeUserSidebar =
-    document.querySelector("#closeUserSidebar");
+    document.querySelector(
+        "#closeUserSidebar"
+    );
 
 const sidebarLogout =
-    document.querySelector("#sidebarLogout");
+    document.querySelector(
+        "#sidebarLogout"
+    );
 
 const sidebarUserName =
-    document.querySelector("#sidebarUserName");
+    document.querySelector(
+        "#sidebarUserName"
+    );
 
 const sidebarUserEmail =
-    document.querySelector("#sidebarUserEmail");
+    document.querySelector(
+        "#sidebarUserEmail"
+    );
+
+
+// ================================
+// BUSCAR PERFIL DO USUÁRIO
+// ================================
+
+async function buscarPerfil(userId) {
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("profiles")
+            .select(
+                "id, nome, email"
+            )
+            .eq(
+                "id",
+                userId
+            )
+            .maybeSingle();
+
+
+    if (error) {
+
+        console.error(
+            "Erro ao buscar perfil:",
+            error
+        );
+
+        return null;
+
+    }
+
+
+    return data;
+
+}
+
+
+// ================================
+// ATUALIZAR DADOS VISUAIS
+// ================================
+
+async function atualizarUsuarioNaTela(
+    usuario
+) {
+
+    if (!usuario) {
+
+        userName.textContent =
+            "Entrar";
+
+
+        sidebarUserName.textContent =
+            "Usuário";
+
+
+        sidebarUserEmail.textContent =
+            "";
+
+        return;
+
+    }
+
+
+    const perfil =
+        await buscarPerfil(
+            usuario.id
+        );
+
+
+    const nome =
+
+        perfil?.nome ||
+
+        usuario
+            .user_metadata
+            ?.nome ||
+
+        "Usuário";
+
+
+    const email =
+
+        perfil?.email ||
+
+        usuario.email ||
+
+        "";
+
+
+    userName.textContent =
+        `Olá, ${nome}`;
+
+
+    sidebarUserName.textContent =
+        nome;
+
+
+    sidebarUserEmail.textContent =
+        email;
+
+}
+
+
+// ================================
+// VERIFICAR SESSÃO
+// ================================
+
+async function verificarUsuarioLogado() {
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .auth
+            .getSession();
+
+
+    if (error) {
+
+        console.error(
+            "Erro ao verificar sessão:",
+            error
+        );
+
+        return;
+
+    }
+
+
+    const session =
+        data.session;
+
+
+    if (!session) {
+
+        await atualizarUsuarioNaTela(
+            null
+        );
+
+        return;
+
+    }
+
+
+    await atualizarUsuarioNaTela(
+        session.user
+    );
+
+}
 
 
 // ================================
 // ABRIR SIDEBAR
 // ================================
 
-function abrirUserSidebar() {
+async function abrirUserSidebar() {
 
-    const usuarioLogado =
-        JSON.parse(
-            localStorage.getItem("usuarioLogado")
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .auth
+            .getSession();
+
+
+    if (error) {
+
+        console.error(
+            "Erro ao verificar sessão:",
+            error
         );
 
-    if (!usuarioLogado) {
         return;
+
     }
 
 
-    sidebarUserName.textContent =
-        usuarioLogado.nome || "Usuário";
+    const session =
+        data.session;
 
 
-    sidebarUserEmail.textContent =
-        usuarioLogado.email || "";
+    if (!session) {
+
+        modal.classList.add(
+            "active"
+        );
+
+        return;
+
+    }
 
 
-    userSidebar.classList.add("active");
+    await atualizarUsuarioNaTela(
+        session.user
+    );
 
-    userOverlay.classList.add("active");
+
+    userSidebar.classList.add(
+        "active"
+    );
+
+
+    userOverlay.classList.add(
+        "active"
+    );
+
 
     document.body.classList.add(
         "user-sidebar-open"
@@ -82,9 +304,15 @@ function abrirUserSidebar() {
 
 function fecharUserSidebar() {
 
-    userSidebar.classList.remove("active");
+    userSidebar.classList.remove(
+        "active"
+    );
 
-    userOverlay.classList.remove("active");
+
+    userOverlay.classList.remove(
+        "active"
+    );
+
 
     document.body.classList.remove(
         "user-sidebar-open"
@@ -94,31 +322,46 @@ function fecharUserSidebar() {
 
 
 // ================================
-// ABRIR LOGIN OU SIDEBAR
+// CLIQUE NO USUÁRIO
 // ================================
 
 loginBtn.addEventListener(
     "click",
-    function (event) {
+    async function (event) {
 
         event.preventDefault();
 
 
-        const usuarioLogado =
-            JSON.parse(
-                localStorage.getItem(
-                    "usuarioLogado"
-                )
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .auth
+                .getSession();
+
+
+        if (error) {
+
+            console.error(
+                "Erro ao verificar sessão:",
+                error
             );
 
+            return;
 
-        if (usuarioLogado) {
+        }
+
+
+        if (data.session) {
 
             abrirUserSidebar();
 
         } else {
 
-            modal.classList.add("active");
+            modal.classList.add(
+                "active"
+            );
 
         }
 
@@ -137,7 +380,7 @@ closeUserSidebar.addEventListener(
 
 
 // ================================
-// FECHAR SIDEBAR NO FUNDO
+// FECHAR SIDEBAR NO OVERLAY
 // ================================
 
 userOverlay.addEventListener(
@@ -147,14 +390,16 @@ userOverlay.addEventListener(
 
 
 // ================================
-// FECHAR MODAL DE LOGIN
+// FECHAR LOGIN
 // ================================
 
 fecharModal.addEventListener(
     "click",
     function () {
 
-        modal.classList.remove("active");
+        modal.classList.remove(
+            "active"
+        );
 
     }
 );
@@ -170,9 +415,15 @@ abrirCadastro.addEventListener(
 
         event.preventDefault();
 
-        modal.classList.remove("active");
 
-        modalCadastro.classList.add("active");
+        modal.classList.remove(
+            "active"
+        );
+
+
+        modalCadastro.classList.add(
+            "active"
+        );
 
     }
 );
@@ -204,37 +455,45 @@ voltarLogin.addEventListener(
 
         event.preventDefault();
 
+
         modalCadastro.classList.remove(
             "active"
         );
 
-        modal.classList.add("active");
+
+        modal.classList.add(
+            "active"
+        );
 
     }
 );
 
 
 // ================================
-// CADASTRO COM LOCALSTORAGE
+// CADASTRO COM SUPABASE
 // ================================
 
 formCadastro.addEventListener(
     "submit",
-    function (event) {
+    async function (event) {
 
         event.preventDefault();
 
 
         const nome =
             document
-                .querySelector("#nomeCadastro")
+                .querySelector(
+                    "#nomeCadastro"
+                )
                 .value
                 .trim();
 
 
         const email =
             document
-                .querySelector("#emailCadastro")
+                .querySelector(
+                    "#emailCadastro"
+                )
                 .value
                 .trim()
                 .toLowerCase();
@@ -242,11 +501,17 @@ formCadastro.addEventListener(
 
         const senha =
             document
-                .querySelector("#senhaCadastro")
+                .querySelector(
+                    "#senhaCadastro"
+                )
                 .value;
 
 
-        if (!nome || !email || !senha) {
+        if (
+            !nome ||
+            !email ||
+            !senha
+        ) {
 
             alert(
                 "Preencha todos os campos."
@@ -257,77 +522,10 @@ formCadastro.addEventListener(
         }
 
 
-        const usuario = {
-
-            nome: nome,
-
-            email: email,
-
-            senha: senha
-
-        };
-
-
-        localStorage.setItem(
-            "usuario",
-            JSON.stringify(usuario)
-        );
-
-
-        alert(
-            "Conta criada com sucesso!"
-        );
-
-
-        formCadastro.reset();
-
-        modalCadastro.classList.remove(
-            "active"
-        );
-
-        modal.classList.add("active");
-
-    }
-);
-
-
-// ================================
-// LOGIN
-// ================================
-
-formLogin.addEventListener(
-    "submit",
-    function (event) {
-
-        event.preventDefault();
-
-
-        const email =
-            document
-                .querySelector("#email")
-                .value
-                .trim()
-                .toLowerCase();
-
-
-        const senha =
-            document
-                .querySelector("#senha")
-                .value;
-
-
-        const usuario =
-            JSON.parse(
-                localStorage.getItem(
-                    "usuario"
-                )
-            );
-
-
-        if (!usuario) {
+        if (senha.length < 6) {
 
             alert(
-                "Nenhuma conta cadastrada."
+                "A senha deve ter pelo menos 6 caracteres."
             );
 
             return;
@@ -335,114 +533,258 @@ formLogin.addEventListener(
         }
 
 
-        const dadosCorretos =
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .auth
+                .signUp({
 
-            email === usuario.email &&
+                    email: email,
 
-            senha === usuario.senha;
+                    password: senha,
+
+                    options: {
+
+                        data: {
+                            nome: nome
+                        }
+
+                    }
+
+                });
 
 
-        if (dadosCorretos) {
+        if (error) {
 
-            localStorage.setItem(
-                "usuarioLogado",
-                JSON.stringify(usuario)
+            console.error(
+                "Erro ao cadastrar:",
+                error
             );
-
-
-            userName.textContent =
-                `Olá, ${usuario.nome}`;
-
-
-            sidebarUserName.textContent =
-                usuario.nome;
-
-
-            sidebarUserEmail.textContent =
-                usuario.email;
-
-
-            modal.classList.remove(
-                "active"
-            );
-
-
-            formLogin.reset();
 
 
             alert(
-                "Login realizado com sucesso!"
+                "Erro ao criar conta: " +
+                error.message
             );
 
-
-        } else {
-
-            alert(
-                "E-mail ou senha incorretos."
-            );
+            return;
 
         }
+
+
+        const usuario =
+            data.user;
+
+
+        if (!usuario) {
+
+            alert(
+                "Não foi possível criar a conta."
+            );
+
+            return;
+
+        }
+
+
+        // ================================
+        // CRIAR PERFIL
+        // ================================
+
+        const {
+            error: profileError
+        } =
+            await supabaseClient
+                .from("profiles")
+                .insert({
+
+                    id:
+                        usuario.id,
+
+                    nome:
+                        nome,
+
+                    email:
+                        email
+
+                });
+
+
+        if (profileError) {
+
+            console.error(
+                "Erro ao criar perfil:",
+                profileError
+            );
+
+
+            alert(
+                "A conta foi criada, mas ocorreu um erro ao criar o perfil."
+            );
+
+            return;
+
+        }
+
+
+        formCadastro.reset();
+
+
+        modalCadastro.classList.remove(
+            "active"
+        );
+
+
+        await atualizarUsuarioNaTela(
+            usuario
+        );
+
+
+        alert(
+            "Conta criada com sucesso!"
+        );
 
     }
 );
 
 
 // ================================
-// MANTER USUÁRIO LOGADO
+// LOGIN COM SUPABASE
 // ================================
 
-function verificarUsuarioLogado() {
+formLogin.addEventListener(
+    "submit",
+    async function (event) {
 
-    const usuarioLogado =
-        JSON.parse(
-            localStorage.getItem(
-                "usuarioLogado"
-            )
+        event.preventDefault();
+
+
+        const email =
+            document
+                .querySelector(
+                    "#email"
+                )
+                .value
+                .trim()
+                .toLowerCase();
+
+
+        const senha =
+            document
+                .querySelector(
+                    "#senha"
+                )
+                .value;
+
+
+        if (!email || !senha) {
+
+            alert(
+                "Preencha e-mail e senha."
+            );
+
+            return;
+
+        }
+
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .auth
+                .signInWithPassword({
+
+                    email:
+                        email,
+
+                    password:
+                        senha
+
+                });
+
+
+        if (error) {
+
+            console.error(
+                "Erro real do login:",
+                error
+            );
+
+
+            alert(
+                error.message
+            );
+
+            return;
+
+        }
+
+
+        const usuario =
+            data.user;
+
+
+        await atualizarUsuarioNaTela(
+            usuario
         );
 
 
-    if (usuarioLogado) {
-
-        userName.textContent =
-            `Olá, ${usuarioLogado.nome}`;
-
-
-        sidebarUserName.textContent =
-            usuarioLogado.nome || "Usuário";
+        modal.classList.remove(
+            "active"
+        );
 
 
-        sidebarUserEmail.textContent =
-            usuarioLogado.email || "";
+        formLogin.reset();
 
 
-    } else {
-
-        userName.textContent =
-            "Entrar";
+        alert(
+            "Login realizado com sucesso!"
+        );
 
     }
-
-}
-
-
-verificarUsuarioLogado();
+);
 
 
 // ================================
-// LOGOUT PELA SIDEBAR
+// LOGOUT
 // ================================
 
 sidebarLogout.addEventListener(
     "click",
-    function () {
+    async function () {
 
-        localStorage.removeItem(
-            "usuarioLogado"
+        const {
+            error
+        } =
+            await supabaseClient
+                .auth
+                .signOut();
+
+
+        if (error) {
+
+            console.error(
+                "Erro ao sair:",
+                error
+            );
+
+
+            alert(
+                "Não foi possível sair da conta."
+            );
+
+            return;
+
+        }
+
+
+        await atualizarUsuarioNaTela(
+            null
         );
-
-
-        userName.textContent =
-            "Entrar";
 
 
         fecharUserSidebar();
@@ -457,14 +799,54 @@ sidebarLogout.addEventListener(
 
 
 // ================================
-// FECHAR MODAIS CLICANDO NO FUNDO
+// MONITORAR ALTERAÇÃO DE LOGIN
+// ================================
+
+supabaseClient
+    .auth
+    .onAuthStateChange(
+        function (
+            event,
+            session
+        ) {
+
+            if (
+                event === "SIGNED_OUT"
+            ) {
+
+                atualizarUsuarioNaTela(
+                    null
+                );
+
+            }
+
+
+            if (
+                event === "SIGNED_IN" &&
+                session
+            ) {
+
+                atualizarUsuarioNaTela(
+                    session.user
+                );
+
+            }
+
+        }
+    );
+
+
+// ================================
+// FECHAR MODAL NO FUNDO
 // ================================
 
 modal.addEventListener(
     "click",
     function (event) {
 
-        if (event.target === modal) {
+        if (
+            event.target === modal
+        ) {
 
             modal.classList.remove(
                 "active"
@@ -476,12 +858,17 @@ modal.addEventListener(
 );
 
 
+// ================================
+// FECHAR CADASTRO NO FUNDO
+// ================================
+
 modalCadastro.addEventListener(
     "click",
     function (event) {
 
         if (
-            event.target === modalCadastro
+            event.target ===
+            modalCadastro
         ) {
 
             modalCadastro.classList.remove(
@@ -492,54 +879,116 @@ modalCadastro.addEventListener(
 
     }
 );
+
+
 // ================================
 // FILTRO POR CATEGORIA
 // ================================
 
 const botoesCategoria =
-    document.querySelectorAll(".category-btn");
+    document.querySelectorAll(
+        ".category-btn"
+    );
+
 
 const cardsProdutos =
-    document.querySelectorAll(".product-card");
+    document.querySelectorAll(
+        ".product-card"
+    );
+
 
 const mensagemVazia =
-    document.querySelector("#emptyProducts");
+    document.querySelector(
+        "#emptyProducts"
+    );
 
-botoesCategoria.forEach(function (botao) {
-    botao.addEventListener("click", function () {
-        const categoriaSelecionada =
-            botao.dataset.category;
 
-        let produtosVisiveis = 0;
+botoesCategoria.forEach(
+    function (botao) {
 
-        botoesCategoria.forEach(function (item) {
-            item.classList.remove("active");
-        });
+        botao.addEventListener(
+            "click",
+            function () {
 
-        botao.classList.add("active");
+                const categoriaSelecionada =
+                    botao
+                        .dataset
+                        .category;
 
-        cardsProdutos.forEach(function (produto) {
-            const categoriaProduto =
-                produto.dataset.category;
 
-            const deveAparecer =
-                categoriaSelecionada === "todos" ||
-                categoriaSelecionada === categoriaProduto;
+                let produtosVisiveis =
+                    0;
 
-            if (deveAparecer) {
-                produto.style.display = "flex";
-                produtosVisiveis++;
-            } else {
-                produto.style.display = "none";
+
+                botoesCategoria.forEach(
+                    function (item) {
+
+                        item.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+
+                botao.classList.add(
+                    "active"
+                );
+
+
+                cardsProdutos.forEach(
+                    function (produto) {
+
+                        const categoriaProduto =
+                            produto
+                                .dataset
+                                .category;
+
+
+                        const deveAparecer =
+
+                            categoriaSelecionada ===
+                                "todos" ||
+
+                            categoriaSelecionada ===
+                                categoriaProduto;
+
+
+                        if (
+                            deveAparecer
+                        ) {
+
+                            produto.style.display =
+                                "flex";
+
+
+                            produtosVisiveis++;
+
+                        } else {
+
+                            produto.style.display =
+                                "none";
+
+                        }
+
+                    }
+                );
+
+
+                mensagemVazia.style.display =
+
+                    produtosVisiveis ===
+                    0
+
+                        ? "block"
+
+                        : "none";
+
             }
-        });
+        );
 
-        mensagemVazia.style.display =
-            produtosVisiveis === 0
-                ? "block"
-                : "none";
-    });
-});
+    }
+);
 
 
 // ================================
@@ -547,54 +996,126 @@ botoesCategoria.forEach(function (botao) {
 // ================================
 
 const campoPesquisa =
-    document.querySelector("#search");
-
-campoPesquisa.addEventListener("input", function () {
-    const textoPesquisado =
-        campoPesquisa.value
-            .trim()
-            .toLowerCase();
-
-    let produtosVisiveis = 0;
-
-    cardsProdutos.forEach(function (produto) {
-        const nomeProduto =
-            produto.dataset.name.toLowerCase();
-
-        const categoriaProduto =
-            produto.dataset.category.toLowerCase();
-
-        const conteudoProduto =
-            produto.textContent.toLowerCase();
-
-        const produtoEncontrado =
-            nomeProduto.includes(textoPesquisado) ||
-            categoriaProduto.includes(textoPesquisado) ||
-            conteudoProduto.includes(textoPesquisado);
-
-        if (produtoEncontrado) {
-            produto.style.display = "flex";
-            produtosVisiveis++;
-        } else {
-            produto.style.display = "none";
-        }
-    });
-
-    botoesCategoria.forEach(function (botao) {
-        botao.classList.remove("active");
-    });
-
-    const botaoTodos = document.querySelector(
-        '[data-category="todos"]'
+    document.querySelector(
+        "#search"
     );
 
-    botaoTodos.classList.add("active");
 
-    mensagemVazia.style.display =
-        produtosVisiveis === 0
-            ? "block"
-            : "none";
-});
+campoPesquisa.addEventListener(
+    "input",
+    function () {
+
+        const textoPesquisado =
+
+            campoPesquisa
+                .value
+                .trim()
+                .toLowerCase();
+
+
+        let produtosVisiveis =
+            0;
+
+
+        cardsProdutos.forEach(
+            function (produto) {
+
+                const nomeProduto =
+
+                    produto
+                        .dataset
+                        .name
+                        .toLowerCase();
+
+
+                const categoriaProduto =
+
+                    produto
+                        .dataset
+                        .category
+                        .toLowerCase();
+
+
+                const conteudoProduto =
+
+                    produto
+                        .textContent
+                        .toLowerCase();
+
+
+                const produtoEncontrado =
+
+                    nomeProduto.includes(
+                        textoPesquisado
+                    ) ||
+
+                    categoriaProduto.includes(
+                        textoPesquisado
+                    ) ||
+
+                    conteudoProduto.includes(
+                        textoPesquisado
+                    );
+
+
+                if (
+                    produtoEncontrado
+                ) {
+
+                    produto.style.display =
+                        "flex";
+
+
+                    produtosVisiveis++;
+
+                } else {
+
+                    produto.style.display =
+                        "none";
+
+                }
+
+            }
+        );
+
+
+        botoesCategoria.forEach(
+            function (botao) {
+
+                botao.classList.remove(
+                    "active"
+                );
+
+            }
+        );
+
+
+        const botaoTodos =
+            document.querySelector(
+                '[data-category="todos"]'
+            );
+
+
+        if (botaoTodos) {
+
+            botaoTodos.classList.add(
+                "active"
+            );
+
+        }
+
+
+        mensagemVazia.style.display =
+
+            produtosVisiveis ===
+            0
+
+                ? "block"
+
+                : "none";
+
+    }
+);
 
 
 // ================================
@@ -602,39 +1123,76 @@ campoPesquisa.addEventListener("input", function () {
 // ================================
 
 const botoesAdicionar =
-    document.querySelectorAll(".add-cart");
+    document.querySelectorAll(
+        ".add-cart"
+    );
+
 
 const cartCount =
-    document.querySelector(".cart-count");
+    document.querySelector(
+        ".cart-count"
+    );
+
 
 const openCart =
-    document.querySelector("#openCart");
+    document.querySelector(
+        "#openCart"
+    );
+
 
 const closeCart =
-    document.querySelector("#closeCart");
+    document.querySelector(
+        "#closeCart"
+    );
+
 
 const cartDrawer =
-    document.querySelector("#cartDrawer");
+    document.querySelector(
+        "#cartDrawer"
+    );
+
 
 const cartOverlay =
-    document.querySelector("#cartOverlay");
+    document.querySelector(
+        "#cartOverlay"
+    );
+
 
 const cartItems =
-    document.querySelector("#cartItems");
+    document.querySelector(
+        "#cartItems"
+    );
+
 
 const cartTotal =
-    document.querySelector("#cartTotal");
+    document.querySelector(
+        "#cartTotal"
+    );
+
 
 const emptyCart =
-    document.querySelector("#emptyCart");
+    document.querySelector(
+        "#emptyCart"
+    );
+
 
 const checkoutBtn =
-    document.querySelector(".checkout-btn");
+    document.querySelector(
+        ".checkout-btn"
+    );
 
 
-// Recupera os produtos salvos
+// ================================
+// RECUPERAR CARRINHO
+// ================================
+
 let carrinho =
-    JSON.parse(localStorage.getItem("carrinho")) || [];
+
+    JSON.parse(
+        localStorage.getItem(
+            "carrinho"
+        )
+    ) || [];
 
 
 // ================================
@@ -642,10 +1200,20 @@ let carrinho =
 // ================================
 
 function formatarPreco(valor) {
-    return valor.toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL"
-    });
+
+    return valor.toLocaleString(
+        "pt-BR",
+        {
+
+            style:
+                "currency",
+
+            currency:
+                "BRL"
+
+        }
+    );
+
 }
 
 
@@ -654,29 +1222,58 @@ function formatarPreco(valor) {
 // ================================
 
 function salvarCarrinho() {
+
     localStorage.setItem(
         "carrinho",
-        JSON.stringify(carrinho)
+        JSON.stringify(
+            carrinho
+        )
     );
+
 }
 
 
 // ================================
-// ABRIR E FECHAR CARRINHO
+// ABRIR CARRINHO
 // ================================
 
 function abrirCarrinho() {
-    cartDrawer.classList.add("active");
-    cartOverlay.classList.add("active");
 
-    document.body.style.overflow = "hidden";
+    cartDrawer.classList.add(
+        "active"
+    );
+
+
+    cartOverlay.classList.add(
+        "active"
+    );
+
+
+    document.body.style.overflow =
+        "hidden";
+
 }
 
-function fecharCarrinho() {
-    cartDrawer.classList.remove("active");
-    cartOverlay.classList.remove("active");
 
-    document.body.style.overflow = "";
+// ================================
+// FECHAR CARRINHO
+// ================================
+
+function fecharCarrinho() {
+
+    cartDrawer.classList.remove(
+        "active"
+    );
+
+
+    cartOverlay.classList.remove(
+        "active"
+    );
+
+
+    document.body.style.overflow =
+        "";
+
 }
 
 
@@ -684,27 +1281,61 @@ function fecharCarrinho() {
 // ADICIONAR PRODUTO
 // ================================
 
-function adicionarProduto(produto) {
+function adicionarProduto(
+    produto
+) {
+
     const produtoExistente =
-        carrinho.find(function (item) {
-            return item.id === produto.id;
+
+        carrinho.find(
+            function (item) {
+
+                return (
+                    item.id ===
+                    produto.id
+                );
+
+            }
+        );
+
+
+    if (
+        produtoExistente
+    ) {
+
+        produtoExistente
+            .quantidade++;
+
+    } else {
+
+        carrinho.push({
+
+            id:
+                produto.id,
+
+            nome:
+                produto.nome,
+
+            preco:
+                produto.preco,
+
+            imagem:
+                produto.imagem,
+
+            quantidade:
+                1
+
         });
 
-    if (produtoExistente) {
-        produtoExistente.quantidade++;
-    } else {
-        carrinho.push({
-            id: produto.id,
-            nome: produto.nome,
-            preco: produto.preco,
-            imagem: produto.imagem,
-            quantidade: 1
-        });
     }
 
+
     salvarCarrinho();
+
     atualizarCarrinho();
+
     abrirCarrinho();
+
 }
 
 
@@ -712,20 +1343,37 @@ function adicionarProduto(produto) {
 // AUMENTAR QUANTIDADE
 // ================================
 
-function aumentarQuantidade(id) {
+function aumentarQuantidade(
+    id
+) {
+
     const produto =
-        carrinho.find(function (item) {
-            return item.id === id;
-        });
+
+        carrinho.find(
+            function (item) {
+
+                return (
+                    item.id === id
+                );
+
+            }
+        );
+
 
     if (!produto) {
+
         return;
+
     }
+
 
     produto.quantidade++;
 
+
     salvarCarrinho();
+
     atualizarCarrinho();
+
 }
 
 
@@ -733,25 +1381,50 @@ function aumentarQuantidade(id) {
 // DIMINUIR QUANTIDADE
 // ================================
 
-function diminuirQuantidade(id) {
+function diminuirQuantidade(
+    id
+) {
+
     const produto =
-        carrinho.find(function (item) {
-            return item.id === id;
-        });
+
+        carrinho.find(
+            function (item) {
+
+                return (
+                    item.id === id
+                );
+
+            }
+        );
+
 
     if (!produto) {
+
         return;
+
     }
+
 
     produto.quantidade--;
 
-    if (produto.quantidade <= 0) {
-        removerProduto(id);
+
+    if (
+        produto.quantidade <= 0
+    ) {
+
+        removerProduto(
+            id
+        );
+
         return;
+
     }
 
+
     salvarCarrinho();
+
     atualizarCarrinho();
+
 }
 
 
@@ -759,13 +1432,27 @@ function diminuirQuantidade(id) {
 // REMOVER PRODUTO
 // ================================
 
-function removerProduto(id) {
-    carrinho = carrinho.filter(function (item) {
-        return item.id !== id;
-    });
+function removerProduto(
+    id
+) {
+
+    carrinho =
+
+        carrinho.filter(
+            function (item) {
+
+                return (
+                    item.id !== id
+                );
+
+            }
+        );
+
 
     salvarCarrinho();
+
     atualizarCarrinho();
+
 }
 
 
@@ -774,146 +1461,293 @@ function removerProduto(id) {
 // ================================
 
 function atualizarCarrinho() {
-    cartItems.innerHTML = "";
 
-    let quantidadeTotal = 0;
-    let valorTotal = 0;
+    cartItems.innerHTML =
+        "";
 
-    carrinho.forEach(function (produto) {
-        quantidadeTotal += produto.quantidade;
 
-        valorTotal +=
-            produto.preco * produto.quantidade;
+    let quantidadeTotal =
+        0;
 
-        const itemCarrinho =
-            document.createElement("article");
 
-        itemCarrinho.classList.add("cart-item");
+    let valorTotal =
+        0;
 
-        itemCarrinho.innerHTML = `
-            <img
-                src="${produto.imagem}"
-                alt="${produto.nome}"
-            >
 
-            <div class="cart-info">
+    carrinho.forEach(
+        function (produto) {
 
-                <h4>${produto.nome}</h4>
+            quantidadeTotal +=
+                produto
+                    .quantidade;
 
-                <p>
-                    ${formatarPreco(produto.preco)}
-                </p>
 
-                <div class="cart-quantity">
+            valorTotal +=
 
-                    <button
-                        type="button"
-                        class="decrease-item"
-                        data-id="${produto.id}"
-                        aria-label="Diminuir quantidade"
-                    >
-                        -
-                    </button>
+                produto.preco *
 
-                    <span>${produto.quantidade}</span>
+                produto.quantidade;
 
-                    <button
-                        type="button"
-                        class="increase-item"
-                        data-id="${produto.id}"
-                        aria-label="Aumentar quantidade"
-                    >
-                        +
-                    </button>
+
+            const itemCarrinho =
+
+                document.createElement(
+                    "article"
+                );
+
+
+            itemCarrinho.classList.add(
+                "cart-item"
+            );
+
+
+            itemCarrinho.innerHTML = `
+
+                <img
+                    src="${produto.imagem}"
+                    alt="${produto.nome}"
+                >
+
+
+                <div class="cart-info">
+
+                    <h4>
+
+                        ${produto.nome}
+
+                    </h4>
+
+
+                    <p>
+
+                        ${formatarPreco(
+                            produto.preco
+                        )}
+
+                    </p>
+
+
+                    <div class="cart-quantity">
+
+                        <button
+                            type="button"
+                            class="decrease-item"
+                            data-id="${produto.id}"
+                            aria-label="Diminuir quantidade"
+                        >
+
+                            -
+
+                        </button>
+
+
+                        <span>
+
+                            ${produto.quantidade}
+
+                        </span>
+
+
+                        <button
+                            type="button"
+                            class="increase-item"
+                            data-id="${produto.id}"
+                            aria-label="Aumentar quantidade"
+                        >
+
+                            +
+
+                        </button>
+
+                    </div>
 
                 </div>
 
-            </div>
 
-            <button
-                type="button"
-                class="remove-item"
-                data-id="${produto.id}"
-                aria-label="Remover produto"
-            >
-                <i class="fa-solid fa-trash"></i>
-            </button>
-        `;
+                <button
+                    type="button"
+                    class="remove-item"
+                    data-id="${produto.id}"
+                    aria-label="Remover produto"
+                >
 
-        cartItems.appendChild(itemCarrinho);
-    });
+                    <i
+                        class="fa-solid fa-trash"
+                    ></i>
 
-    cartCount.textContent = quantidadeTotal;
+                </button>
+
+            `;
+
+
+            cartItems.appendChild(
+                itemCarrinho
+            );
+
+        }
+    );
+
+
+    cartCount.textContent =
+        quantidadeTotal;
+
 
     cartTotal.textContent =
-        formatarPreco(valorTotal);
+        formatarPreco(
+            valorTotal
+        );
+
 
     emptyCart.style.display =
+
         carrinho.length === 0
+
             ? "block"
+
             : "none";
 
+
     adicionarEventosDosItens();
+
 }
 
 
 // ================================
-// EVENTOS DOS ITENS DO CARRINHO
+// EVENTOS DOS ITENS
 // ================================
 
 function adicionarEventosDosItens() {
+
     const botoesAumentar =
-        document.querySelectorAll(".increase-item");
+        document.querySelectorAll(
+            ".increase-item"
+        );
+
 
     const botoesDiminuir =
-        document.querySelectorAll(".decrease-item");
+        document.querySelectorAll(
+            ".decrease-item"
+        );
+
 
     const botoesRemover =
-        document.querySelectorAll(".remove-item");
+        document.querySelectorAll(
+            ".remove-item"
+        );
 
-    botoesAumentar.forEach(function (botao) {
-        botao.addEventListener("click", function () {
-            aumentarQuantidade(botao.dataset.id);
-        });
-    });
 
-    botoesDiminuir.forEach(function (botao) {
-        botao.addEventListener("click", function () {
-            diminuirQuantidade(botao.dataset.id);
-        });
-    });
+    botoesAumentar.forEach(
+        function (botao) {
 
-    botoesRemover.forEach(function (botao) {
-        botao.addEventListener("click", function () {
-            removerProduto(botao.dataset.id);
-        });
-    });
+            botao.addEventListener(
+                "click",
+                function () {
+
+                    aumentarQuantidade(
+                        botao.dataset.id
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    botoesDiminuir.forEach(
+        function (botao) {
+
+            botao.addEventListener(
+                "click",
+                function () {
+
+                    diminuirQuantidade(
+                        botao.dataset.id
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    botoesRemover.forEach(
+        function (botao) {
+
+            botao.addEventListener(
+                "click",
+                function () {
+
+                    removerProduto(
+                        botao.dataset.id
+                    );
+
+                }
+            );
+
+        }
+    );
+
 }
 
 
 // ================================
-// CLIQUE EM ADICIONAR AO CARRINHO
+// ADICIONAR AO CARRINHO
 // ================================
 
-botoesAdicionar.forEach(function (botao) {
-    botao.addEventListener("click", function () {
-        const card =
-            botao.closest(".product-card");
+botoesAdicionar.forEach(
+    function (botao) {
 
-        const produto = {
-            id: card.dataset.id,
-            nome: card.dataset.name,
-            preco: Number(card.dataset.price),
-            imagem: card.dataset.image
-        };
+        botao.addEventListener(
+            "click",
+            function () {
 
-        adicionarProduto(produto);
-    });
-});
+                const card =
+                    botao.closest(
+                        ".product-card"
+                    );
+
+
+                if (!card) {
+
+                    return;
+
+                }
+
+
+                const produto = {
+
+                    id:
+                        card.dataset.id,
+
+                    nome:
+                        card.dataset.name,
+
+                    preco:
+                        Number(
+                            card.dataset.price
+                        ),
+
+                    imagem:
+                        card.dataset.image
+
+                };
+
+
+                adicionarProduto(
+                    produto
+                );
+
+            }
+        );
+
+    }
+);
 
 
 // ================================
-// EVENTOS DO CARRINHO
+// ABRIR CARRINHO
 // ================================
 
 openCart.addEventListener(
@@ -921,10 +1755,20 @@ openCart.addEventListener(
     abrirCarrinho
 );
 
+
+// ================================
+// FECHAR CARRINHO
+// ================================
+
 closeCart.addEventListener(
     "click",
     fecharCarrinho
 );
+
+
+// ================================
+// FECHAR PELO OVERLAY
+// ================================
 
 cartOverlay.addEventListener(
     "click",
@@ -936,68 +1780,97 @@ cartOverlay.addEventListener(
 // FINALIZAR COMPRA
 // ================================
 
-// ================================
-// FINALIZAR COMPRA
-// ================================
+checkoutBtn.addEventListener(
+    "click",
+    async function () {
 
-checkoutBtn.addEventListener("click", function () {
+        if (
+            carrinho.length === 0
+        ) {
 
-    if (carrinho.length === 0) {
+            alert(
+                "Seu carrinho está vazio."
+            );
 
-        alert("Seu carrinho está vazio.");
+            return;
 
-        return;
+        }
+
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .auth
+                .getSession();
+
+
+        if (error) {
+
+            console.error(
+                "Erro ao verificar login:",
+                error
+            );
+
+            return;
+
+        }
+
+
+        if (
+            !data.session
+        ) {
+
+            fecharCarrinho();
+
+
+            modal.classList.add(
+                "active"
+            );
+
+
+            alert(
+                "Entre na sua conta para finalizar a compra."
+            );
+
+            return;
+
+        }
+
+
+        window.location.href =
+            "checkout.html";
 
     }
+);
 
-
-    const usuarioLogado =
-        JSON.parse(
-            localStorage.getItem(
-                "usuarioLogado"
-            )
-        );
-
-
-    if (!usuarioLogado) {
-
-        fecharCarrinho();
-
-        modal.classList.add("active");
-
-        alert(
-            "Entre na sua conta para finalizar a compra."
-        );
-
-        return;
-
-    }
-
-
-    window.location.href =
-        "checkout.html";
-
-});
 
 // ================================
-// FECHAR COM A TECLA ESC
+// FECHAR COM ESC
 // ================================
 
 document.addEventListener(
     "keydown",
     function (event) {
 
-        if (event.key === "Escape") {
+        if (
+            event.key ===
+            "Escape"
+        ) {
 
             modal.classList.remove(
                 "active"
             );
 
+
             modalCadastro.classList.remove(
                 "active"
             );
 
+
             fecharUserSidebar();
+
 
             fecharCarrinho();
 
@@ -1008,7 +1881,9 @@ document.addEventListener(
 
 
 // ================================
-// CARREGAR CARRINHO
+// INICIAR PÁGINA
 // ================================
 
 atualizarCarrinho();
+
+verificarUsuarioLogado();

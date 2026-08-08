@@ -13,135 +13,434 @@ const template =
 
 
 // ================================
-// RECUPERAR PEDIDOS
-// ================================
-
-const pedidos =
-    JSON.parse(
-        localStorage.getItem("pedidos")
-    ) || [];
-
-
-// ================================
 // FORMATAR PREÇO
 // ================================
 
 function formatarPreco(valor) {
 
-    return valor.toLocaleString("pt-BR", {
-
-        style: "currency",
-
-        currency: "BRL"
-
-    });
+    return Number(valor)
+        .toLocaleString(
+            "pt-BR",
+            {
+                style: "currency",
+                currency: "BRL"
+            }
+        );
 
 }
 
 
 // ================================
-// MOSTRAR PEDIDOS
+// FORMATAR DATA
 // ================================
 
-function carregarPedidos() {
+function formatarData(data) {
 
-    ordersList.innerHTML = "";
+    return new Date(data)
+        .toLocaleString(
+            "pt-BR"
+        );
+
+}
 
 
-    if (pedidos.length === 0) {
+// ================================
+// FORMATAR STATUS
+// ================================
 
-        emptyOrders.style.display = "block";
+function formatarStatus(status) {
+
+    const statusDisponiveis = {
+
+        realizado:
+            "Pedido realizado",
+
+        preparando:
+            "Preparando pedido",
+
+        enviado:
+            "Pedido enviado",
+
+        entregue:
+            "Pedido entregue",
+
+        cancelado:
+            "Pedido cancelado"
+
+    };
+
+
+    return (
+        statusDisponiveis[status] ||
+        status
+    );
+
+}
+
+
+// ================================
+// PROTEGER PÁGINA
+// ================================
+
+async function verificarUsuario() {
+
+    const {
+        data: {
+            user
+        },
+        error
+    } =
+        await supabaseClient
+            .auth
+            .getUser();
+
+
+    if (error) {
+
+        console.error(
+            "Erro ao verificar usuário:",
+            error
+        );
+
+    }
+
+
+    if (!user) {
+
+        alert(
+            "Entre na sua conta para acessar suas compras."
+        );
+
+
+        window.location.href =
+            "index.html";
+
+
+        return null;
+
+    }
+
+
+    return user;
+
+}
+
+
+// ================================
+// BUSCAR ITENS DO PEDIDO
+// ================================
+
+async function buscarItensPedido(
+    pedidoId
+) {
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("order_items")
+            .select("*")
+            .eq(
+                "order_id",
+                pedidoId
+            )
+            .order(
+                "id",
+                {
+                    ascending: true
+                }
+            );
+
+
+    if (error) {
+
+        console.error(
+            `Erro ao carregar itens do pedido ${pedidoId}:`,
+            error
+        );
+
+
+        return [];
+
+    }
+
+
+    return data || [];
+
+}
+
+
+// ================================
+// CARREGAR PEDIDOS
+// ================================
+
+async function carregarPedidos() {
+
+    ordersList.innerHTML =
+        "";
+
+
+    const user =
+        await verificarUsuario();
+
+
+    if (!user) {
 
         return;
 
     }
 
-    emptyOrders.style.display = "none";
+
+    // ================================
+    // BUSCAR PEDIDOS
+    // ================================
+
+    const {
+        data: pedidos,
+        error
+    } =
+        await supabaseClient
+            .from("orders")
+            .select("*")
+            .eq(
+                "user_id",
+                user.id
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
 
 
-    // Pedido mais recente primeiro
+    if (error) {
 
-    pedidos
-        .slice()
-        .reverse()
-        .forEach(function (pedido) {
-
-            const clone =
-                template.content.cloneNode(true);
+        console.error(
+            "Erro ao carregar pedidos:",
+            error
+        );
 
 
-            clone.querySelector(".order-id").textContent =
+        alert(
+            "Não foi possível carregar suas compras."
+        );
+
+
+        return;
+
+    }
+
+
+    // ================================
+    // NENHUM PEDIDO
+    // ================================
+
+    if (
+        !pedidos ||
+        pedidos.length === 0
+    ) {
+
+        emptyOrders.style.display =
+            "block";
+
+
+        return;
+
+    }
+
+
+    emptyOrders.style.display =
+        "none";
+
+
+    // ================================
+    // MOSTRAR PEDIDOS
+    // ================================
+
+    for (
+        const pedido of pedidos
+    ) {
+
+        const itens =
+            await buscarItensPedido(
+                pedido.id
+            );
+
+
+        const clone =
+            template
+                .content
+                .cloneNode(
+                    true
+                );
+
+
+        // ================================
+        // ID
+        // ================================
+
+        clone
+            .querySelector(
+                ".order-id"
+            )
+            .textContent =
                 `Pedido #${pedido.id}`;
 
 
-            clone.querySelector(".order-date").textContent =
-                pedido.data;
+        // ================================
+        // DATA
+        // ================================
+
+        clone
+            .querySelector(
+                ".order-date"
+            )
+            .textContent =
+                formatarData(
+                    pedido.created_at
+                );
 
 
-            clone.querySelector(".payment").textContent =
-                pedido.pagamento.toUpperCase();
+        // ================================
+        // STATUS
+        // ================================
+
+        clone
+            .querySelector(
+                ".order-status"
+            )
+            .textContent =
+                formatarStatus(
+                    pedido.status
+                );
 
 
-            clone.querySelector(".total").textContent =
-                formatarPreco(pedido.total);
+        // ================================
+        // PAGAMENTO
+        // ================================
+
+        clone
+            .querySelector(
+                ".payment"
+            )
+            .textContent =
+                pedido.pagamento
+                    .toUpperCase();
 
 
-            const produtosContainer =
-                clone.querySelector(".order-products");
+        // ================================
+        // TOTAL
+        // ================================
+
+        clone
+            .querySelector(
+                ".total"
+            )
+            .textContent =
+                formatarPreco(
+                    pedido.total
+                );
 
 
-            pedido.produtos.forEach(function (produto) {
+        // ================================
+        // PRODUTOS
+        // ================================
 
-                const produtoHTML =
-                `
-                <div class="product">
+        const produtosContainer =
+            clone.querySelector(
+                ".order-products"
+            );
 
-                    <img
-                        src="${produto.imagem}"
-                        alt="${produto.nome}"
-                    >
 
-                    <div class="product-info">
+        if (
+            itens.length === 0
+        ) {
 
-                        <h4>
-                            ${produto.nome}
-                        </h4>
+            produtosContainer.innerHTML = `
 
-                        <p>
-                            Quantidade:
-                            ${produto.quantidade}
-                        </p>
+                <p>
+                    Nenhum produto encontrado neste pedido.
+                </p>
 
-                        <div class="product-price">
+            `;
 
-                            ${formatarPreco(
-                                produto.preco
-                            )}
+        } else {
+
+            itens.forEach(
+                function (produto) {
+
+                    const imagem =
+                        produto.imagem ||
+                        "imgs/five icon.png";
+
+
+                    const produtoHTML = `
+
+                        <div class="product">
+
+                            <img
+                                src="${imagem}"
+                                alt="${produto.nome}"
+                            >
+
+
+                            <div class="product-info">
+
+                                <h4>
+
+                                    ${produto.nome}
+
+                                </h4>
+
+
+                                <p>
+
+                                    Quantidade:
+                                    ${produto.quantidade}
+
+                                </p>
+
+
+                                <div class="product-price">
+
+                                    ${formatarPreco(
+                                        produto.preco
+                                    )}
+
+                                </div>
+
+                            </div>
 
                         </div>
 
-                    </div>
-
-                </div>
-                `;
-
-                produtosContainer.insertAdjacentHTML(
-                    "beforeend",
-                    produtoHTML
-                );
-
-            });
+                    `;
 
 
-            ordersList.appendChild(clone);
+                    produtosContainer
+                        .insertAdjacentHTML(
+                            "beforeend",
+                            produtoHTML
+                        );
 
-        });
+                }
+            );
+
+        }
+
+
+        ordersList.appendChild(
+            clone
+        );
+
+    }
 
 }
 
 
 // ================================
-// CARREGAR
+// INICIAR
 // ================================
 
 carregarPedidos();
