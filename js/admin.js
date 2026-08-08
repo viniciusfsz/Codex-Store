@@ -846,6 +846,27 @@ function renderizarUltimosPedidos(
 
 async function carregarTickets() {
 
+    console.log(
+        "===== TESTE TICKETS ADMIN ====="
+    );
+
+
+    const {
+        data: {
+            user
+        }
+    } =
+        await supabaseClient
+            .auth
+            .getUser();
+
+
+    console.log(
+        "Usuário admin logado:",
+        user
+    );
+
+
     const {
         data,
         error
@@ -861,12 +882,25 @@ async function carregarTickets() {
             );
 
 
+    console.log(
+        "TICKETS RECEBIDOS:",
+        data
+    );
+
+
+    console.log(
+        "ERRO DOS TICKETS:",
+        error
+    );
+
+
     if (error) {
 
         console.error(
             "Erro ao carregar tickets:",
             error
         );
+
 
         ticketsBody.innerHTML = `
 
@@ -876,22 +910,34 @@ async function carregarTickets() {
                     colspan="5"
                     class="loading-table"
                 >
-                    Não foi possível carregar os tickets.
+
+                    Erro ao carregar tickets:
+                    ${error.message}
+
                 </td>
 
             </tr>
 
         `;
 
+
         totalTickets.textContent =
             "0";
 
+
         return;
+
     }
 
 
     tickets =
         data || [];
+
+
+    console.log(
+        "QUANTIDADE DE TICKETS:",
+        tickets.length
+    );
 
 
     totalTickets.textContent =
@@ -901,8 +947,8 @@ async function carregarTickets() {
     renderizarTickets(
         tickets
     );
-}
 
+}
 
 // =========================================
 // RENDERIZAR TICKETS
@@ -2138,3 +2184,5 @@ async function iniciarAdmin() {
 
 
 iniciarAdmin();
+
+
